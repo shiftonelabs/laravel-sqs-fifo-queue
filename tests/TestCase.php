@@ -2,6 +2,7 @@
 
 namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
 
+use Exception;
 use Dotenv\Dotenv;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -47,7 +48,11 @@ class TestCase extends PHPUnit_Framework_TestCase
      */
     public function loadEnvironment()
     {
-        (new Dotenv(__DIR__.'/..'))->load();
+        try {
+            (new Dotenv(__DIR__.'/..'))->load();
+        } catch (Exception $e) {
+            //
+        }
     }
 
     /**
@@ -119,8 +124,8 @@ class TestCase extends PHPUnit_Framework_TestCase
             'key' => getenv('SQS_KEY'),
             'secret' => getenv('SQS_SECRET'),
             'prefix' => getenv('SQS_PREFIX'),
-            'queue' => getenv('SQS_QUEUE'),
-            'region' => getenv('SQS_REGION'),
+            'queue' => getenv('SQS_QUEUE') ?: 'queuename.fifo',
+            'region' => getenv('SQS_REGION') ?: '',
             'group' => 'default',
             'deduplicator' => 'unique',
         ], 'sqs-fifo');
