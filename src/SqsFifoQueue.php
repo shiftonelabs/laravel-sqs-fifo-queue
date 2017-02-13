@@ -63,7 +63,7 @@ class SqsFifoQueue extends SqsQueue
      * Push a raw payload onto the queue.
      *
      * @param  string  $payload
-     * @param  string  $queue
+     * @param  string|null  $queue
      * @param  array  $options
      *
      * @return mixed
@@ -89,7 +89,7 @@ class SqsFifoQueue extends SqsQueue
      * @param  \DateTime|int  $delay
      * @param  string  $job
      * @param  mixed  $data
-     * @param  string  $queue
+     * @param  string|null  $queue
      *
      * @return mixed
      *
@@ -97,7 +97,7 @@ class SqsFifoQueue extends SqsQueue
      */
     public function later($delay, $job, $data = '', $queue = null)
     {
-        throw new BadMethodCallException("FIFO queues do not support per-message delays.");
+        throw new BadMethodCallException('FIFO queues do not support per-message delays.');
     }
 
     /**
@@ -125,10 +125,10 @@ class SqsFifoQueue extends SqsQueue
                 return $deduplicator->generate($payload, $queue);
             }
 
-            throw new InvalidArgumentException(sprintf("Deduplication method [%s] must resolve to a %s implementation.", $driver, Deduplicator::class));
+            throw new InvalidArgumentException(sprintf('Deduplication method [%s] must resolve to a %s implementation.', $driver, Deduplicator::class));
         }
 
-        throw new InvalidArgumentException(sprintf("Unsupported deduplication method [%s]", $driver));
+        throw new InvalidArgumentException(sprintf('Unsupported deduplication method [%s].', $driver));
     }
 
     /**
@@ -136,7 +136,7 @@ class SqsFifoQueue extends SqsQueue
      *
      * @param  mixed  $job
      * @param  mixed  $data
-     * @param  string  $queue
+     * @param  string|null  $queue
      *
      * @return string
      *
@@ -199,7 +199,7 @@ class SqsFifoQueue extends SqsQueue
      *
      * @param  mixed  $job
      * @param  mixed  $data
-     * @param  string  $queue
+     * @param  string|null  $queue
      *
      * @return array
      */
