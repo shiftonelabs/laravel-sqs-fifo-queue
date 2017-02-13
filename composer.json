@@ -1,0 +1,42 @@
+{
+    "name": "shiftonelabs/laravel-sqs-fifo-queue",
+    "description": "Adds a Laravel queue driver for Amazon SQS FIFO queues.",
+    "keywords": ["laravel", "lumen", "illuminate", "queue", "sqs", "fifo", "aws"],
+    "homepage": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Patrick Carlo-Hickman",
+            "email": "patrick@shiftonelabs.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue/issues",
+        "source": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue"
+    },
+    "require": {
+        "php": ">=5.5.0",
+        "illuminate/queue": ">=4.1",
+        "aws/aws-sdk-php": "~3.0",
+        "ramsey/uuid": "~3.0"
+    },
+    "require-dev": {
+        "illuminate/encryption": ">=4.1",
+        "phpunit/phpunit": "~4.0",
+        "mockery/mockery": "~0.9",
+        "squizlabs/php_codesniffer": "2.*",
+        "shiftonelabs/codesniffer-standard": "0.*",
+        "vlucas/phpdotenv": "~2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShiftOneLabs\\LaravelSqsFifoQueue\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShiftOneLabs\\LaravelSqsFifoQueue\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
