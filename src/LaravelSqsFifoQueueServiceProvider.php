@@ -15,7 +15,7 @@ class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = true;
+    protected $defer = false;
 
     /**
      * Register any application services.
@@ -113,19 +113,5 @@ class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
     public function registerSqsDeduplicator()
     {
         $this->app->bind('queue.sqs-fifo.deduplicator.sqs', Sqs::class);
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [
-            'queue.sqs-fifo.deduplicator.unique',
-            'queue.sqs-fifo.deduplicator.content',
-            'queue.sqs-fifo.deduplicator.sqs',
-        ];
     }
 }
