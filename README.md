@@ -143,7 +143,7 @@ For the most part, usage of this queue driver is the same as the built in queue 
 
 In addition to being able to have multiple queue names for each connection, an SQS FIFO queue also allows one to have multiple "groups" for each FIFO queue. As an example, imagine a change sorter that had four queues setup, one each for quarters, dimes, nickels, and pennies. One could then setup groups inside the queues. For example, inside the penny queue, there could be a group for pre-1982 pennies and a group for post-1982 pennies.
 
-By default, all queued jobs will be lumped into one group, as defined in the configuration file. In the configuration provided above, all queued jobs would be sent as part of the `default` group. The group can be changed per job using the `onGroup()` method, which will be explained more below.
+By default, all queued jobs will be lumped into one group, as defined in the configuration file. In the configuration provided above, all queued jobs would be sent as part of the `default` group. The group can be changed per job using the `onMessageGroup()` method, which will be explained more below.
 
 The group id must not be empty, must not be more than 128 characters, and can contain alphanumeric characters and punctuation (``!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``).
 
@@ -178,7 +178,7 @@ To delay a job, you must `push()` the job to an SQS FIFO queue that has been def
 
 #### Per-Job Group and Deduplicator
 
-If you need to change the group or the deduplicator for a specific job, you will need access to the `onGroup()` and `withDeduplicator()` methods. These methods are provided through the `ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable` trait. Once you add this trait to your job class, you can change the group and/or the deduplicator for that specific job without affecting any other jobs on the queue.
+If you need to change the group or the deduplicator for a specific job, you will need access to the `onMessageGroup()` and `withDeduplicator()` methods. These methods are provided through the `ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable` trait. Once you add this trait to your job class, you can change the group and/or the deduplicator for that specific job without affecting any other jobs on the queue.
 
 #### Code Example
 
@@ -208,7 +208,7 @@ Usage:
 ``` php
 dispatch(
     (new \App\Jobs\ProcessPenny)
-        ->onGroup('post1982')
+        ->onMessageGroup('post1982')
         ->withDeduplicator('unique')
 );
 ```
