@@ -2,10 +2,7 @@ build:
     tests:
         override:
             -
-                command: 'vendor/bin/phpunit --coverage-clover=some-file'
-                coverage:
-                    file: 'some-file'
-                    format: 'clover'
+                command: 'vendor/bin/phpunit'
 
     nodes:
         php55:
@@ -30,3 +27,8 @@ build:
 
 filter:
     excluded_paths: [tests/*]
+
+tools:
+    external_code_coverage:
+        timeout: 1800
+        runs: 38
