@@ -25,6 +25,12 @@ build:
             environment:
                 php: 7.2
 
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+                    - phpcs-run
+
 filter:
     excluded_paths: [tests/*]
 
