@@ -26,6 +26,8 @@ build:
                 php: 7.2
 
         analysis:
+            environment:
+                php: 7.2
             tests:
                 override:
                     - php-scrutinizer-run
