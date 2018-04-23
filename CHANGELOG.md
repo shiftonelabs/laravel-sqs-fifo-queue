@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated CI configs for increased test coverage.
+- Allow `key` and `secret` config keys to be omitted for alternative AWS credentials.
 
 ## [1.0.2] - 2017-02-14
 ### Fixed

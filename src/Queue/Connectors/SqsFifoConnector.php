@@ -24,7 +24,7 @@ class SqsFifoConnector extends SqsConnector
             throw new InvalidArgumentException('FIFO queue name must end in ".fifo"');
         }
 
-        if ($config['key'] && $config['secret']) {
+        if (!empty($config['key']) && !empty($config['secret'])) {
             $config['credentials'] = array_only($config, ['key', 'secret']);
         }
 

@@ -34,4 +34,22 @@ class IntegrationTest extends TestCase
 
         $this->assertNotNull($id);
     }
+
+    public function test_push_to_fifo_queue_works_with_alternate_credentials()
+    {
+        $connection = 'sqs-fifo-no-credentials';
+        $config = $this->app['config']["queue.connections.{$connection}"];
+
+        if (empty($config['prefix']) || empty($config['queue']) || empty($config['region'])) {
+            return $this->markTestSkipped('SQS config missing prefix, queue, or region');
+        }
+
+        if (empty(getenv('AWS_ACCESS_KEY_ID')) || empty(getenv('AWS_SECRET_ACCESS_KEY'))) {
+            return $this->markTestSkipped('Environment missing alternate SQS credentials');
+        }
+
+        $id = $this->queue->connection($connection)->push(Job::class, ['with' => 'data']);
+
+        $this->assertNotNull($id);
+    }
 }

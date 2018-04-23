@@ -129,6 +129,15 @@ class TestCase extends PHPUnit_Framework_TestCase
             'group' => 'default',
             'deduplicator' => 'unique',
         ], 'sqs-fifo');
+
+        $queue->addConnection([
+            'driver' => 'sqs-fifo',
+            'prefix' => getenv('SQS_PREFIX'),
+            'queue' => getenv('SQS_QUEUE') ?: 'queuename.fifo',
+            'region' => getenv('SQS_REGION') ?: '',
+            'group' => 'default',
+            'deduplicator' => 'unique',
+        ], 'sqs-fifo-no-credentials');
     }
 
     /**
