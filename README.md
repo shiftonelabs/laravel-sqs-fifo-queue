@@ -19,15 +19,16 @@ $ composer require shiftonelabs/laravel-sqs-fifo-queue
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
+For Laravel 5.5+, this package uses auto package discovery. The service provider will automatically be registered.
+
+For Laravel 5.0 - 5.4, open `config/app.php` and add following line to the providers array:
+``` php
+ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
+```
 For Laravel 4, open `app/config/app.php` and add following line to the providers array:
 
 ``` php
 'ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider',
-```
-
-For Laravel 5, open `config/app.php` and add following line to the providers array:
-``` php
-ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
 ```
 
 For Lumen 5, open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
@@ -37,7 +38,7 @@ $app->register(ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvid
 
 ## Configuration
 
-#### Laravel/Lumen 5.1+ (5.1, 5.2, 5.3, 5.4)
+#### Laravel/Lumen 5.1+ (5.1, 5.2, 5.3, 5.4, 5.5, 5.6)
 
 If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
 

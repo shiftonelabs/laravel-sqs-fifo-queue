@@ -38,5 +38,12 @@
             "ShiftOneLabs\\LaravelSqsFifoQueue\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ShiftOneLabs\\LaravelSqsFifoQueue\\LaravelSqsFifoQueueServiceProvider"
+            ]
+        }
+    }
 }

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - New changelog.
+- Support for automatic package discovery in Laravel 5.5+.
 
 ### Changed
 - Updated CI configs for increased test coverage.
