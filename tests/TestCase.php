@@ -7,10 +7,11 @@ use Dotenv\Dotenv;
 use ReflectionMethod;
 use ReflectionProperty;
 use Illuminate\Queue\Queue;
+use Illuminate\Queue\SqsQueue;
 use PHPUnit_Framework_TestCase;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Queue\Capsule\Manager as Capsule;
-use \ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
+use ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
 
 class TestCase extends PHPUnit_Framework_TestCase
 {
@@ -119,12 +120,19 @@ class TestCase extends PHPUnit_Framework_TestCase
             'driver' => 'sync',
         ]);
 
+        $queueName = getenv('SQS_QUEUE') ?: 'queuename.fifo';
+
+        // Laravel <= 5.0 doesn't use the prefix key. It must be prepended to the queue name.
+        if (!property_exists(SqsQueue::class, 'prefix')) {
+            $queueName = getenv('SQS_PREFIX').'/'.$queueName;
+        }
+
         $queue->addConnection([
             'driver' => 'sqs-fifo',
             'key' => getenv('SQS_KEY'),
             'secret' => getenv('SQS_SECRET'),
             'prefix' => getenv('SQS_PREFIX'),
-            'queue' => getenv('SQS_QUEUE') ?: 'queuename.fifo',
+            'queue' => $queueName,
             'region' => getenv('SQS_REGION') ?: '',
             'group' => 'default',
             'deduplicator' => 'unique',
@@ -133,7 +141,7 @@ class TestCase extends PHPUnit_Framework_TestCase
         $queue->addConnection([
             'driver' => 'sqs-fifo',
             'prefix' => getenv('SQS_PREFIX'),
-            'queue' => getenv('SQS_QUEUE') ?: 'queuename.fifo',
+            'queue' => $queueName,
             'region' => getenv('SQS_REGION') ?: '',
             'group' => 'default',
             'deduplicator' => 'unique',
