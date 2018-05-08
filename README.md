@@ -9,6 +9,10 @@
 
 This Laravel/Lumen package provides a queue driver for Amazon's SQS FIFO queues. While Laravel works with Amazon's SQS standard queues out of the box, FIFO queues are slightly different and are not handled properly by Laravel. That is where this package comes in.
 
+## Versions
+
+This package has been tested on Laravel 4.1 through Laravel 5.6, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+
 ## Install
 
 Via Composer
@@ -19,19 +23,30 @@ $ composer require shiftonelabs/laravel-sqs-fifo-queue
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
-For Laravel 5.5+, this package uses auto package discovery. The service provider will automatically be registered.
+#### Laravel 5.5+ (5.5, 5.6)
 
-For Laravel 5.0 - 5.4, open `config/app.php` and add following line to the providers array:
+This package uses auto package discovery. The service provider will automatically be registered.
+
+#### Laravel 5.0 - 5.4
+
+Open `config/app.php` and add following line to the providers array:
+
 ``` php
 ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
 ```
-For Laravel 4, open `app/config/app.php` and add following line to the providers array:
+
+#### Laravel 4 (4.1, 4.2)
+
+Open `app/config/app.php` and add following line to the providers array:
 
 ``` php
 'ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider',
 ```
 
-For Lumen 5, open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
+#### Lumen 5 (5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6)
+
+Open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
+
 ``` php
 $app->register(ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class);
 ```
@@ -144,13 +159,15 @@ The `key` and `secret` config options may be omitted if using one of the alterna
 
 For the most part, usage of this queue driver is the same as the built in queue drivers. There are, however, a few extra things to consider when working with Amazon's SQS FIFO queues.
 
-#### Groups
+#### Message Groups
 
-In addition to being able to have multiple queue names for each connection, an SQS FIFO queue also allows one to have multiple "groups" for each FIFO queue. As an example, imagine a change sorter that had four queues setup, one each for quarters, dimes, nickels, and pennies. One could then setup groups inside the queues. For example, inside the penny queue, there could be a group for pre-1982 pennies and a group for post-1982 pennies.
+In addition to being able to have multiple queue names for each connection, an SQS FIFO queue also allows one to have multiple "message groups" for each FIFO queue. These message groups are used to group related jobs together, and jobs are processed in FIFO order per group. This is important, as your queue performance may depend on being able to assign message groups properly. If you have 100 jobs in the queue, and they all belong to one message group, then only one queue worker will be able to process the jobs at a time. If, however, they can logically be split across 5 message groups, then you could have 5 queue workers processing the jobs from the queues (one per group). The FIFO ordering is per message group.
 
-By default, all queued jobs will be lumped into one group, as defined in the configuration file. In the configuration provided above, all queued jobs would be sent as part of the `default` group. The group can be changed per job using the `onMessageGroup()` method, which will be explained more below.
+Currently, by default, all queued jobs will be lumped into one group, as defined in the configuration file. In the configuration provided above, all queued jobs would be sent as part of the `default` group. The group can be changed per job using the `onMessageGroup()` method, which will be explained more below.
 
 The group id must not be empty, must not be more than 128 characters, and can contain alphanumeric characters and punctuation (``!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``).
+
+In a future release, the message group will be able to be assigned to a function, like the deduplicator below.
 
 #### Deduplication
 
@@ -200,7 +217,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
-class ProcessPenny implements ShouldQueue
+class ProcessCoin implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SqsFifoQueueable, SerializesModels;
 
@@ -212,8 +229,8 @@ Usage:
 
 ``` php
 dispatch(
-    (new \App\Jobs\ProcessPenny)
-        ->onMessageGroup('post1982')
+    (new \App\Jobs\ProcessCoin)
+        ->onMessageGroup('quarter')
         ->withDeduplicator('unique')
 );
 ```
