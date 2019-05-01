@@ -235,6 +235,34 @@ dispatch(
 );
 ```
 
+Notification
+
+``` php
+<?php
+
+namespace App\Notifications;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
+use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
+
+class ExampleNotification extends Notification implements ShouldQueue
+{
+    use Queueable, SqsFifoQueueable;
+
+```
+
+Usage:
+
+``` php
+$user->notify(
+    (new ExampleNotification($notification))
+        ->locale($user->language)
+        ->onMessageGroup('important')
+);
+```
+
 #### Custom Deduplicator
 
 The deduplicators work by generating a deduplication id that is sent to the queue. If two messages generate the same deduplication id, the second message is considered a duplicate, and the message will not be delivered if it is within the 5 minute deduplication interval.
