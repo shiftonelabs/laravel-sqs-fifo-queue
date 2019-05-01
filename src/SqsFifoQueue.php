@@ -6,7 +6,6 @@ use LogicException;
 use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
-use Illuminate\Notifications\SendQueuedNotifications;
 use Illuminate\Queue\SqsQueue;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
@@ -225,7 +224,7 @@ class SqsFifoQueue extends SqsQueue
             return [];
         }
 
-        if ($job instanceof SendQueuedNotifications) {
+        if (get_class($job) == 'Illuminate\Notifications\SendQueuedNotifications') {
             $messageGroupId = isset($job->notification->messageGroupId) ? $job->notification->messageGroupId : null;
             $deduplicator = isset($job->notification->deduplicator) ? $job->notification->deduplicator : null;
         } else {
