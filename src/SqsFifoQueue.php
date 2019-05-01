@@ -292,10 +292,18 @@ class SqsFifoQueue extends SqsQueue
             return [];
         }
 
+        if (get_class($job) == 'Illuminate\Notifications\SendQueuedNotifications') {
+            $messageGroupId = isset($job->notification->messageGroupId) ? $job->notification->messageGroupId : null;
+            $deduplicator = isset($job->notification->deduplicator) ? $job->notification->deduplicator : null;
+        } else {
+            $messageGroupId = isset($job->messageGroupId) ? $job->messageGroupId : null;
+            $deduplicator = isset($job->deduplicator) ? $job->deduplicator : null;
+        }
+
         return array_filter(
             [
-                'group' => isset($job->messageGroupId) ? $job->messageGroupId : null,
-                'deduplicator' => isset($job->deduplicator) ? $job->deduplicator : null,
+                'group' => $messageGroupId,
+                'deduplicator' => $deduplicator,
             ],
             function ($value) {
                 return $value !== null;
