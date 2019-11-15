@@ -7,6 +7,7 @@ use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Illuminate\Queue\SqsQueue;
+use Illuminate\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class SqsFifoQueue extends SqsQueue
@@ -248,6 +249,6 @@ class SqsFifoQueue extends SqsQueue
     {
         $payload = json_decode($payload, true);
 
-        return array_get($payload, $key, $default);
+        return Arr::get($payload, $key, $default);
     }
 }
