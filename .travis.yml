@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
@@ -18,16 +17,24 @@ env:
   - ILLUMINATE_VERSION=5.5.*
   - ILLUMINATE_VERSION=5.6.*
 
-matrix:
+jobs:
+  include:
+    - dist: trusty
+      php: 5.5
+      env: ILLUMINATE_VERSION=4.1.*
+    - dist: trusty
+      php: 5.5
+      env: ILLUMINATE_VERSION=4.2.*
+    - dist: trusty
+      php: 5.5
+      env: ILLUMINATE_VERSION=5.0.*
+    - dist: trusty
+      php: 5.5
+      env: ILLUMINATE_VERSION=5.1.*
+    - dist: trusty
+      php: 5.5
+      env: ILLUMINATE_VERSION=5.2.*
   exclude:
-    - php: 5.5
-      env: ILLUMINATE_VERSION=5.3.*
-    - php: 5.5
-      env: ILLUMINATE_VERSION=5.4.*
-    - php: 5.5
-      env: ILLUMINATE_VERSION=5.5.*
-    - php: 5.5
-      env: ILLUMINATE_VERSION=5.6.*
     - php: 5.6
       env: ILLUMINATE_VERSION=5.5.*
     - php: 5.6
