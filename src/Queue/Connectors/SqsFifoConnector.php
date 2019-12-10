@@ -3,10 +3,10 @@
 namespace ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors;
 
 use Aws\Sqs\SqsClient;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Queue\Connectors\SqsConnector;
-use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
+use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
 
 class SqsFifoConnector extends SqsConnector

@@ -7,12 +7,11 @@ use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Illuminate\Queue\SqsQueue;
-use Illuminate\Support\Arr;
+use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class SqsFifoQueue extends SqsQueue
 {
-
     /**
      * The message group id of the fifo pipe in the queue.
      *
