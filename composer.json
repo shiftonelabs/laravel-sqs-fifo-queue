@@ -16,9 +16,9 @@
     },
     "require": {
         "php": ">=5.5.0",
+        "aws/aws-sdk-php": "~3.0",
         "illuminate/queue": ">=4.1",
         "illuminate/support": ">=4.1",
-        "aws/aws-sdk-php": "~3.0",
         "ramsey/uuid": "~3.0"
     },
     "require-dev": {
@@ -38,6 +38,9 @@
         "psr-4": {
             "ShiftOneLabs\\LaravelSqsFifoQueue\\Tests\\": "tests/"
         }
+    },
+    "config": {
+        "sort-packages": true
     },
     "minimum-stability": "stable",
     "extra": {
