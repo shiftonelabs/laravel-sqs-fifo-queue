@@ -4,7 +4,6 @@ namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
 
 use Illuminate\Container\Container;
 use Illuminate\Queue\QueueServiceProvider;
-use Illuminate\Events\EventServiceProvider;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
 use ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;

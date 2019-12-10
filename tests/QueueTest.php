@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Job;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\StandardJob;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
 
 class QueueTest extends TestCase
 {
@@ -301,7 +300,6 @@ class QueueTest extends TestCase
     public function test_push_to_fifo_queue_returns_id()
     {
         $connection = 'sqs-fifo';
-        $config = $this->app['config']["queue.connections.{$connection}"];
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
@@ -318,7 +316,6 @@ class QueueTest extends TestCase
     public function test_push_standard_job_to_fifo_queue_returns_id()
     {
         $connection = 'sqs-fifo';
-        $config = $this->app['config']["queue.connections.{$connection}"];
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
