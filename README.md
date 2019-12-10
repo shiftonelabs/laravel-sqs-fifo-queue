@@ -11,7 +11,7 @@ This Laravel/Lumen package provides a queue driver for Amazon's SQS FIFO queues.
 
 ## Versions
 
-This package has been tested on Laravel 4.1 through Laravel 5.6, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+This package has been tested on Laravel 4.1 through Laravel 6.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
 
 ## Install
 
@@ -23,7 +23,7 @@ $ composer require shiftonelabs/laravel-sqs-fifo-queue
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
-#### Laravel 5.5+ (5.5, 5.6)
+#### Laravel 5.5+, 6.x (5.5, 5.6, 5.7, 5.8, 6.x)
 
 This package uses auto package discovery. The service provider will automatically be registered.
 
@@ -43,7 +43,7 @@ Open `app/config/app.php` and add following line to the providers array:
 'ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider',
 ```
 
-#### Lumen 5 (5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6)
+#### Lumen 5, 6 (5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x)
 
 Open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
 
@@ -53,7 +53,7 @@ $app->register(ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvid
 
 ## Configuration
 
-#### Laravel/Lumen 5.1+ (5.1, 5.2, 5.3, 5.4, 5.5, 5.6)
+#### Laravel/Lumen 5.1+, 6.x (5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x)
 
 If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
 
