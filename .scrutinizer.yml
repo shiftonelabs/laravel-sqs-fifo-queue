@@ -25,9 +25,17 @@ build:
             environment:
                 php: 7.2
 
+        php73:
+            environment:
+                php: 7.3
+
+        php74:
+            environment:
+                php: 7.4
+
         analysis:
             environment:
-                php: 7.2
+                php: 7.4
             tests:
                 override:
                     - php-scrutinizer-run
@@ -38,5 +46,5 @@ filter:
 
 tools:
     external_code_coverage:
-        timeout: 1800
-        runs: 38
+        timeout: 5400
+        runs: 67
