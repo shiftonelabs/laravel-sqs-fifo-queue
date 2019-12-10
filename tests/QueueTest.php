@@ -241,6 +241,8 @@ class QueueTest extends TestCase
 
     public function test_queue_throws_exception_with_invalid_deduplicator()
     {
+        $this->bind_invalid_custom_deduplicator();
+
         $job = 'test';
         $deduplication = 'custom';
 
@@ -251,7 +253,24 @@ class QueueTest extends TestCase
         $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->setExpectedException(InvalidArgumentException::class, 'Deduplication method ['.$deduplication.'] must resolve to a');
+
+        $queue->pushRaw($job);
+    }
+
+    public function test_queue_throws_exception_with_unbound_deduplicator()
+    {
+        $job = 'test';
+        $deduplication = 'custom';
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue->setContainer($this->app);
+
+        $this->setExpectedException(InvalidArgumentException::class, 'Unsupported deduplication method ['.$deduplication.'].');
 
         $queue->pushRaw($job);
     }
@@ -319,6 +338,13 @@ class QueueTest extends TestCase
             return new \ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Callback(function ($payload, $queue) {
                 return 'custom';
             });
+        });
+    }
+
+    protected function bind_invalid_custom_deduplicator()
+    {
+        $this->app->bind('queue.sqs-fifo.deduplicator.custom', function () {
+            return 'custom';
         });
     }
 }
