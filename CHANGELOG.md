@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support Laravel 6.x by converting string and array helpers to use support classes.
 - Updated CI configs to support newest versions of Laravel and PHP.
 - Updated readme with new version information.
+- Added a missing test for invalid bound deduplicators.
+- Cleaned up some unused use statements and variables in tests.
 
 ## [1.1.0] - 2018-05-08
 ### Added
