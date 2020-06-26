@@ -35,6 +35,20 @@ class IntegrationTest extends TestCase
         $this->assertNotNull($id);
     }
 
+    public function test_push_job_instance_to_fifo_queue_returns_id()
+    {
+        $connection = 'sqs-fifo';
+        $config = $this->app['config']["queue.connections.{$connection}"];
+
+        if (empty($config['key']) || empty($config['secret']) || empty($config['prefix']) || empty($config['queue']) || empty($config['region'])) {
+            return $this->markTestSkipped('SQS config missing key, secret, prefix, queue, or region');
+        }
+
+        $id = $this->queue->connection($connection)->push((new Job)->onMessageGroup('instance-test'), ['with' => 'data']);
+
+        $this->assertNotNull($id);
+    }
+
     public function test_push_to_fifo_queue_works_with_alternate_credentials()
     {
         $connection = 'sqs-fifo-no-credentials';

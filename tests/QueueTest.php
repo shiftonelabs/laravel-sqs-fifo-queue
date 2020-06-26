@@ -7,6 +7,7 @@ use Mockery as m;
 use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
+use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Job;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\StandardJob;
@@ -52,7 +53,44 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', '');
+        $queue = new SqsFifoQueue($client, '', '', 'queue-group', '');
+        $queue->setContainer($this->app);
+
+        $queue->push($job);
+    }
+
+    public function test_queue_converts_job_instance_to_class_name_when_queuing_instances_is_not_supported()
+    {
+        $group = 'job-group';
+        $job = new Job();
+        $job->onMessageGroup($group);
+        $closure = function ($message) use ($group) {
+            if ($message['MessageGroupId'] != $group) {
+                return false;
+            }
+
+            $payload = json_decode($message['MessageBody']);
+
+            // On versions that don't support queuing job instances (Laravel 4),
+            // the payload job should be the name of the Job class.
+            if (!class_exists(CallQueuedHandler::class) && $payload->job != Job::class) {
+                return false;
+            }
+
+            // On versions that do support queuing job instances (Laravel 5+),
+            // the payload job should not be the name of the Job class.
+            if (class_exists(CallQueuedHandler::class) && $payload->job == Job::class) {
+                return false;
+            }
+
+            return true;
+        };
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', 'queue-group', '');
         $queue->setContainer($this->app);
 
         $queue->push($job);

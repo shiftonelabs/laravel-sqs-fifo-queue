@@ -7,6 +7,7 @@ use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Illuminate\Queue\SqsQueue;
+use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
@@ -157,6 +158,13 @@ class SqsFifoQueue extends SqsQueue
         // through the parent call to the "createPayload" method.
         if (method_exists(get_parent_class($this), 'createPayloadArray')) {
             return $payload;
+        }
+
+        // Laravel < 5.0 doesn't support pushing job instances onto the queue.
+        // We must regenerate the payload using just the class name, instead
+        // of the job instance, so the queue worker can handle the job.
+        if (!class_exists(CallQueuedHandler::class)) {
+            $payload = parent::createPayload(get_class($job), $data, $queue);
         }
 
         // Laravel <= 5.3 has the `setMeta` method. This is the method
