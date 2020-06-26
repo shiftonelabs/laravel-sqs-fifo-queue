@@ -67,9 +67,9 @@ jobs:
 
 before_install:
   - composer self-update
-  - if [ "$ILLUMINATE_VERSION" != "" ]; then composer require "illuminate/queue:${ILLUMINATE_VERSION}" --no-update; fi;
+  - if [ "$ILLUMINATE_VERSION" != "" ]; then travis_retry composer require "illuminate/queue:${ILLUMINATE_VERSION}" --no-update; fi;
 
-install: travis_wait composer update --prefer-dist --no-interaction
+install: travis_retry travis_wait composer update --prefer-dist --no-interaction
 
 script:
   - ./vendor/bin/phpcs
