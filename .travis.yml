@@ -25,6 +25,7 @@ env:
   - ILLUMINATE_VERSION=5.7.*
   - ILLUMINATE_VERSION=5.8.*
   - ILLUMINATE_VERSION=6.*
+  - ILLUMINATE_VERSION=7.*
 
 jobs:
   include:
@@ -54,6 +55,8 @@ jobs:
       env: ILLUMINATE_VERSION=5.8.*
     - php: 5.6
       env: ILLUMINATE_VERSION=6.*
+    - php: 5.6
+      env: ILLUMINATE_VERSION=7.*
     - php: 7.0
       env: ILLUMINATE_VERSION=5.6.*
     - php: 7.0
@@ -62,8 +65,12 @@ jobs:
       env: ILLUMINATE_VERSION=5.8.*
     - php: 7.0
       env: ILLUMINATE_VERSION=6.*
+    - php: 7.0
+      env: ILLUMINATE_VERSION=7.*
     - php: 7.1
       env: ILLUMINATE_VERSION=6.*
+    - php: 7.1
+      env: ILLUMINATE_VERSION=7.*
 
 before_install:
   - composer self-update
