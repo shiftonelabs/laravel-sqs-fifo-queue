@@ -235,6 +235,8 @@ dispatch(
 );
 ```
 
+*Note: Laravel 4 does not normally support passing job instances to the queue, but this package does. The job instance will get converted to just the class name, so the queuing system will continue to work, but the message group and the deduplicator will be pulled off of the job instance before the conversion.*
+
 #### Custom Deduplicator
 
 The deduplicators work by generating a deduplication id that is sent to the queue. If two messages generate the same deduplication id, the second message is considered a duplicate, and the message will not be delivered if it is within the 5 minute deduplication interval.
