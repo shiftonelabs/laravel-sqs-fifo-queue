@@ -153,7 +153,7 @@ $app->instance('queue', $queue->getQueueManager());
 
 #### Credentials
 
-The `key` and `secret` config options may be omitted if using one of the alternative options for providing AWS credentials (e.g. using an AWS credentials file). More informataion about this is available in the [AWS PHP SDK guide here](https://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html).
+The `key` and `secret` config options may be omitted if using one of the alternative options for providing AWS credentials (e.g. using an AWS credentials file). More information about alternative options is available in the [AWS PHP SDK guide here](https://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html).
 
 #### AWS STS Session Token
 
