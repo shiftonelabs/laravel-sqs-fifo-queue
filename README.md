@@ -155,6 +155,10 @@ $app->instance('queue', $queue->getQueueManager());
 
 The `key` and `secret` config options may be omitted if using one of the alternative options for providing AWS credentials (e.g. using an AWS credentials file). More informataion about this is available in the [AWS PHP SDK guide here](https://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html).
 
+#### AWS STS Session Token
+
+The `'token' => env('AWS_SESSION_TOKEN'),` config option may be added if you need to specify an AWS STS temporary session token in the config. This is needed for some specific environments, such as AWS Lambda.
+
 ## Usage
 
 For the most part, usage of this queue driver is the same as the built in queue drivers. There are, however, a few extra things to consider when working with Amazon's SQS FIFO queues.
