@@ -76,7 +76,7 @@ Example .env file:
     SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
     SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
 
-If you'd like this to be the default connection, also set `QUEUE_DRIVER=sqs-fifo` in the `.env` file.
+If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file for >= 5.7, or `QUEUE_DRIVER=sqs-fifo` in the `.env` file for < 5.7.
 
 #### Laravel/Lumen 5.0
 
