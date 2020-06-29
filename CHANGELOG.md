@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support for AWS STS temporary credentials session token in the config. ([#9](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/pull/9), [3493a99](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/commit/3493a99acd8005ca94e1c7d4cc0f86a1e6ab8a8f))
 
+### Changed
+- Updated readme with newer queue connection environment variable name as of Laravel 5.7.
+- Updated readme wording about alternative AWS credentials.
+
+### Fixed
+- Fixed spelling typo in the readme.
+
 ## [1.1.3] - 2020-06-26
 ### Changed
 - Updated ramsey/uuid dependency version to support Laravel 7.x.
