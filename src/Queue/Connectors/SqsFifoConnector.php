@@ -27,7 +27,7 @@ class SqsFifoConnector extends SqsConnector
         }
 
         if (!empty($config['key']) && !empty($config['secret'])) {
-            $config['credentials'] = Arr::only($config, ['key', 'secret']);
+            $config['credentials'] = Arr::only($config, ['key', 'secret', 'token']);
         }
 
         $group = Arr::pull($config, 'group', 'default');
