@@ -64,6 +64,7 @@ Now, for both Laravel and Lumen, open `config/queue.php` and add the following e
         'key' => env('SQS_KEY'),
         'secret' => env('SQS_SECRET'),
         'prefix' => env('SQS_PREFIX'),
+        'suffix' => env('SQS_SUFFIX'),
         'queue' => 'your-queue-name',    // ex: queuename.fifo
         'region' => 'your-queue-region', // ex: us-east-2
         'group' => 'default',
@@ -133,8 +134,9 @@ $queue->addConnection([
     'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
     'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
     /**
-     * Set "prefix" and/or "queue" depending on version, as described for Laravel versions above
+     * Set "prefix"/"suffix" and/or "queue" depending on version, as described for Laravel versions above
      * 'prefix' => 'your-prefix',
+     * 'suffix' => 'your-suffix',
      * 'queue' => 'your-queue-name',
      */
     'region' => 'your-queue-region', // ex: us-east-2
@@ -158,6 +160,17 @@ The `key` and `secret` config options may be omitted if using one of the alterna
 #### AWS STS Session Token
 
 The `'token' => env('AWS_SESSION_TOKEN'),` config option may be added if you need to specify an AWS STS temporary session token in the config. This is needed for some specific environments, such as AWS Lambda.
+
+#### Queue Suffix
+
+The `suffix` config option is used to support queues for different environments without having to specify the environment suffix when using the queue. For example, if you have an `emails-staging.fifo` queue and an `emails-production.fifo` queue, you can set the `suffix` config to `-staging` or `-production` based on the environment, and your code can continue to use `emails.fifo` without needing to know the environment. So, `Job::dispatch()->onQueue('emails.fifo')` will use either the `emails-staging.fifo` or the `emails-production.fifo` queue, depending on the `suffix` defined in the config.
+
+This functionality was introduced to plain SQS queues in Laravel 7.x, primarily to support Laravel Vapor. More details are available on [the PR for the feature](https://github.com/laravel/framework/pull/31784).
+
+There are two differences between the standard Laravel implementation and this one:
+
+- This package adds support for queue suffixes all the way back to Laravel 5.1.
+- SQS FIFO queues must end with a `.fifo` suffix. As seen in the example above, any `suffix` defined in the config will come before the required `.fifo` suffix. Do not specify `.fifo` in the suffix config or the queue name will not generate correctly.
 
 ## Usage
 
