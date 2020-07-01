@@ -69,6 +69,7 @@ Now, for both Laravel and Lumen, open `config/queue.php` and add the following e
         'region' => 'your-queue-region', // ex: us-east-2
         'group' => 'default',
         'deduplicator' => 'unique',
+        'allow_delay' => env('SQS_ALLOW_DELAY'),
     ],
 
 Example .env file:
@@ -76,6 +77,7 @@ Example .env file:
     SQS_KEY=ABCDEFGHIJKLMNOPQRST
     SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
     SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
+    SQS_ALLOW_DELAY=false
 
 If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file for >= 5.7, or `QUEUE_DRIVER=sqs-fifo` in the `.env` file for < 5.7.
 
@@ -93,6 +95,7 @@ Now, for both Laravel and Lumen, open `config/queue.php` and add the following e
         'region' => 'your-queue-region',
         'group' => 'default',
         'deduplicator' => 'unique',
+        'allow_delay' => env('SQS_ALLOW_DELAY'),
     ],
 
 Example .env file:
@@ -100,6 +103,7 @@ Example .env file:
     SQS_KEY=ABCDEFGHIJKLMNOPQRST
     SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
     SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
+    SQS_ALLOW_DELAY=false
 
 If you'd like this to be the default connection, also set `QUEUE_DRIVER=sqs-fifo` in the `.env` file.
 
@@ -115,6 +119,7 @@ Open `app/config/queue.php` and add the following entry to the `connections` arr
         'region' => 'your-queue-region', // ex: us-east-2
         'group' => 'default',
         'deduplicator' => 'unique',
+        'allow_delay' => false,
     ),
 
 If you'd like this to be the default connection, also update the `'default'` key to `'sqs-fifo'`.
@@ -142,6 +147,7 @@ $queue->addConnection([
     'region' => 'your-queue-region', // ex: us-east-2
     'group' => 'default',
     'deduplicator' => 'unique',
+    'allow_delay' => false,
 ], 'sqs-fifo');
 
 // Make this Capsule instance available globally via static methods... (optional)
@@ -209,9 +215,13 @@ Finally, by default, all queued jobs will use the deduplicator defined in the co
 
 #### Delayed Jobs
 
-SQS FIFO queues do not support per-message delays, only per-queue delays. The desired delay is defined on the queue itself when the queue is setup in the Amazon Console. Attempting to set a delay on a job sent to a FIFO queue will have no affect. To this end, using the `later()` method to push a job to an SQS FIFO queue will generate a `BadMethodCallException`.
+SQS FIFO queues do not support per-message delays, only per-queue delays. The desired delay is defined on the queue itself when the queue is setup in the Amazon Console. Attempting to set a delay on a job sent to a FIFO queue will have no affect. In order to delay a job, you can `push()` the job to an SQS FIFO queue that has been defined with a delivery delay.
 
-To delay a job, you must `push()` the job to an SQS FIFO queue that has been defined with a delivery delay.
+Since per-message delays are not supported, using the `later()` method to push a job to an SQS FIFO queue will throw a `BadMethodCallException` exception by default. However, this behavior can be changed using the `allow_delay` config option.
+
+Setting the `allow_delay` config option to `true` for a queue will allow the `later()` method to push a job on that queue without an exception. However, the delay parameter sent to the `later()` method is completely ignored since the delay time is defined in SQS on the queue itself.
+
+*Note: There is a bug in Laravel 5.4.36 - 5.6.35 that causes all queued `Mailable` objects that use the `\Illuminate\Bus\Queueable` trait to use the `later()` method. If you are affected by this, you will need to set the `allow_delay` config option to `true` for your queues, even if they don't allow delays. This will prevent the exception from being thrown.*
 
 ## Advanced Usage
 
