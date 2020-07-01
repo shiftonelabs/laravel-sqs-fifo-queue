@@ -23,7 +23,7 @@ class Str extends BaseStr
             return $subject;
         }
 
-        $pos = mb_strrpos($subject, $search);
+        $pos = mb_strrpos($subject, $search, 0, 'UTF-8');
 
         if ($pos === false) {
             return $subject;
