@@ -312,7 +312,7 @@ class QueueTest extends TestCase
         $queue->pushRaw($job);
     }
 
-    public function test_later_throws_exception()
+    public function test_later_throws_exception_without_allow_delay()
     {
         $job = 'test';
         $client = m::mock(SqsClient::class);
@@ -320,6 +320,18 @@ class QueueTest extends TestCase
 
         $this->setExpectedException(BadMethodCallException::class);
 
+        $queue->later(10, $job);
+    }
+
+    public function test_later_pushes_job_with_allow_delay()
+    {
+        $job = 'test';
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->once()->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', '', '', '', true);
         $queue->later(10, $job);
     }
 

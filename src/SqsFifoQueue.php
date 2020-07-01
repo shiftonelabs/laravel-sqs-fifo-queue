@@ -36,6 +36,13 @@ class SqsFifoQueue extends SqsQueue
     protected $deduplicator;
 
     /**
+     * The flag to check if this queue is setup for delay.
+     *
+     * @var bool
+     */
+    protected $allowDelay;
+
+    /**
      * Create a new Amazon SQS queue instance.
      *
      * @param  \Aws\Sqs\SqsClient  $sqs
@@ -44,16 +51,18 @@ class SqsFifoQueue extends SqsQueue
      * @param  string  $suffix
      * @param  string  $group
      * @param  string  $deduplicator
+     * @param  bool  $allowDelay
      *
      * @return void
      */
-    public function __construct(SqsClient $sqs, $default, $prefix = '', $suffix = '', $group = '', $deduplicator = '')
+    public function __construct(SqsClient $sqs, $default, $prefix = '', $suffix = '', $group = '', $deduplicator = '', $allowDelay = false)
     {
         parent::__construct($sqs, $default, $prefix);
 
         $this->suffix = $suffix;
         $this->group = $group;
         $this->deduplicator = $deduplicator;
+        $this->allowDelay = $allowDelay;
     }
 
     /**
@@ -97,6 +106,10 @@ class SqsFifoQueue extends SqsQueue
     /**
      * Push a new job onto the queue after a delay.
      *
+     * SQS FIFO queues do not allow per-message delays, but the queue itself
+     * can be configured to delay the message. If this queue is setup for
+     * delayed messages, push the job to the queue instead of throwing.
+     *
      * @param  \DateTime|int  $delay
      * @param  string  $job
      * @param  mixed  $data
@@ -108,6 +121,10 @@ class SqsFifoQueue extends SqsQueue
      */
     public function later($delay, $job, $data = '', $queue = null)
     {
+        if ($this->allowDelay) {
+            return $this->push($job, $data, $queue);
+        }
+
         throw new BadMethodCallException('FIFO queues do not support per-message delays.');
     }
 

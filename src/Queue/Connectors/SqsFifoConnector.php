@@ -32,6 +32,7 @@ class SqsFifoConnector extends SqsConnector
 
         $group = Arr::pull($config, 'group', 'default');
         $deduplicator = Arr::pull($config, 'deduplicator', 'unique');
+        $allowDelay = (bool)Arr::pull($config, 'allow_delay', false);
 
         return new SqsFifoQueue(
             new SqsClient($config),
@@ -39,7 +40,8 @@ class SqsFifoConnector extends SqsConnector
             Arr::get($config, 'prefix', ''),
             Arr::get($config, 'suffix', ''),
             $group,
-            $deduplicator
+            $deduplicator,
+            $allowDelay
         );
     }
 
