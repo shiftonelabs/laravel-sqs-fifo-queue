@@ -37,6 +37,7 @@ class SqsFifoConnector extends SqsConnector
             new SqsClient($config),
             $config['queue'],
             Arr::get($config, 'prefix', ''),
+            Arr::get($config, 'suffix', ''),
             $group,
             $deduplicator
         );

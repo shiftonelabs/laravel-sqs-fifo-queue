@@ -30,7 +30,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', $group, '');
+        $queue = new SqsFifoQueue($client, '', '', '', $group, '');
         $queue->setContainer($this->app);
 
         $queue->pushRaw($job);
@@ -53,7 +53,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', 'queue-group', '');
+        $queue = new SqsFifoQueue($client, '', '', '', 'queue-group', '');
         $queue->setContainer($this->app);
 
         $queue->push($job);
@@ -90,7 +90,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', 'queue-group', '');
+        $queue = new SqsFifoQueue($client, '', '', '', 'queue-group', '');
         $queue->setContainer($this->app);
 
         $queue->push($job);
@@ -115,7 +115,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', '');
+        $queue = new SqsFifoQueue($client, '', '', '', '', '');
         $queue->setContainer($this->app);
 
         $queue->push($job);
@@ -136,7 +136,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', 'unique');
+        $queue = new SqsFifoQueue($client, '', '', '', '', 'unique');
         $queue->setContainer($this->app);
 
         $queue->push($job);
@@ -158,7 +158,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', 'unique');
+        $queue = new SqsFifoQueue($client, '', '', '', '', 'unique');
         $queue->setContainer($this->app);
 
         $queue->push($job);
@@ -180,7 +180,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $queue->pushRaw($job);
@@ -202,7 +202,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $queue->pushRaw($job);
@@ -224,7 +224,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $queue->pushRaw($job);
@@ -246,7 +246,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $queue->pushRaw($job);
@@ -270,7 +270,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $queue->pushRaw($job);
@@ -287,7 +287,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $this->setExpectedException(InvalidArgumentException::class, 'Deduplication method ['.$deduplication.'] must resolve to a');
@@ -304,7 +304,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $client->shouldReceive('sendMessage')->andReturn($result);
 
-        $queue = new SqsFifoQueue($client, '', '', '', $deduplication);
+        $queue = new SqsFifoQueue($client, '', '', '', '', $deduplication);
         $queue->setContainer($this->app);
 
         $this->setExpectedException(InvalidArgumentException::class, 'Unsupported deduplication method ['.$deduplication.'].');
@@ -365,6 +365,100 @@ class QueueTest extends TestCase
         $id = $queue->push(StandardJob::class, ['with' => 'data']);
 
         $this->assertEquals('1234', $id);
+    }
+
+    public function test_get_queue_properly_resolves_url_with_prefix_support()
+    {
+        if (!property_exists(SqsFifoQueue::class, 'prefix')) {
+            return $this->markTestSkipped('This version does not support a prefix config value.');
+        }
+
+        $client = m::mock(SqsClient::class);
+        $prefix = 'https://sqs.us-east-1.amazonaws.com/123456789012';
+        $suffix = '-staging';
+        $queueName = 'queue';
+        $queueFifoName = $queueName.'.fifo';
+        $queueFifoNameWithSuffix = $queueName.$suffix.'.fifo';
+        $queueUrl = $prefix.'/'.$queueFifoName;
+
+        // Make sure the queue is built without a prefix or suffix.
+        $queue = new SqsFifoQueue($client, $queueFifoName);
+        $this->assertEquals('/'.$queueFifoName, $queue->getQueue(null));
+        $this->assertEquals('/'.$queueFifoName, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue is built with a prefix and not a suffix.
+        $queue = new SqsFifoQueue($client, $queueFifoName, $prefix);
+        $this->assertEquals($prefix.'/'.$queueFifoName, $queue->getQueue(null));
+        $this->assertEquals($prefix.'/'.$queueFifoName, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue is built with a suffix and not a prefix.
+        $queue = new SqsFifoQueue($client, $queueFifoName, '', $suffix);
+        $this->assertEquals('/'.$queueFifoNameWithSuffix, $queue->getQueue(null));
+        $this->assertEquals('/'.$queueFifoNameWithSuffix, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue is built with both a prefix and a suffix.
+        $queue = new SqsFifoQueue($client, $queueFifoName, $prefix, $suffix);
+        $this->assertEquals($prefix.'/'.$queueFifoNameWithSuffix, $queue->getQueue(null));
+        $this->assertEquals($prefix.'/'.$queueFifoNameWithSuffix, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue name is only suffixed once.
+        $queue = new SqsFifoQueue($client, $queueFifoNameWithSuffix, $prefix, $suffix);
+        $this->assertEquals($prefix.'/'.$queueFifoNameWithSuffix, $queue->getQueue(null));
+        $this->assertEquals($prefix.'/'.$queueFifoNameWithSuffix, $queue->getQueue($queueFifoNameWithSuffix));
+
+        // Make sure the queue name isn't modified if it's already a full url.
+        $queue = new SqsFifoQueue($client, $queueUrl, $prefix, $suffix);
+        $this->assertEquals($queueUrl, $queue->getQueue(null));
+        $this->assertEquals($queueUrl, $queue->getQueue($queueUrl));
+    }
+
+    public function test_get_queue_properly_resolves_url_without_prefix_support()
+    {
+        if (property_exists(SqsFifoQueue::class, 'prefix')) {
+            return $this->markTestSkipped('This version supports a prefix config value.');
+        }
+
+        $client = m::mock(SqsClient::class);
+        $prefix = 'https://sqs.us-east-1.amazonaws.com/123456789012';
+        $suffix = '-staging';
+        $queueName = 'queue';
+        $queueFifoName = $queueName.'.fifo';
+        $queueFifoNameWithSuffix = $queueName.$suffix.'.fifo';
+        $queueUrl = $prefix.'/'.$queueFifoName;
+
+        // Make sure the queue is built without a prefix or suffix.
+        $queue = new SqsFifoQueue($client, $queueFifoName);
+        $this->assertEquals($queueFifoName, $queue->getQueue(null));
+        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue is built with a prefix and not a suffix. This
+        // version does not support prefixes so it will be ignored.
+        $queue = new SqsFifoQueue($client, $queueFifoName, $prefix);
+        $this->assertEquals($queueFifoName, $queue->getQueue(null));
+        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue is built with a suffix and not a prefix. This
+        // version does not support suffixes so it will be ignored.
+        $queue = new SqsFifoQueue($client, $queueFifoName, '', $suffix);
+        $this->assertEquals($queueFifoName, $queue->getQueue(null));
+        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue is built with both a prefix and a suffix. This
+        // version does not support prefixes/suffixes and will be ignored.
+        $queue = new SqsFifoQueue($client, $queueFifoName, $prefix, $suffix);
+        $this->assertEquals($queueFifoName, $queue->getQueue(null));
+        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
+
+        // Make sure the queue name is only suffixed once. This version
+        // does not support suffixes so it will be ignored.
+        $queue = new SqsFifoQueue($client, $queueFifoNameWithSuffix, $prefix, $suffix);
+        $this->assertEquals($queueFifoNameWithSuffix, $queue->getQueue(null));
+        $this->assertEquals($queueFifoNameWithSuffix, $queue->getQueue($queueFifoNameWithSuffix));
+
+        // Make sure the suffix is ignored even if it's already a full url.
+        $queue = new SqsFifoQueue($client, $queueUrl, $prefix, $suffix);
+        $this->assertEquals($queueUrl, $queue->getQueue(null));
+        $this->assertEquals($queueUrl, $queue->getQueue($queueUrl));
     }
 
     protected function bind_custom_deduplicator()

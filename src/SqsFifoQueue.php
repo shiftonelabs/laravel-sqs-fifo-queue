@@ -9,10 +9,18 @@ use InvalidArgumentException;
 use Illuminate\Queue\SqsQueue;
 use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
+use ShiftOneLabs\LaravelSqsFifoQueue\Support\Str;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class SqsFifoQueue extends SqsQueue
 {
+    /**
+     * The queue name suffix.
+     *
+     * @var string
+     */
+    protected $suffix;
+
     /**
      * The message group id of the fifo pipe in the queue.
      *
@@ -33,15 +41,17 @@ class SqsFifoQueue extends SqsQueue
      * @param  \Aws\Sqs\SqsClient  $sqs
      * @param  string  $default
      * @param  string  $prefix
+     * @param  string  $suffix
      * @param  string  $group
      * @param  string  $deduplicator
      *
      * @return void
      */
-    public function __construct(SqsClient $sqs, $default, $prefix = '', $group = '', $deduplicator = '')
+    public function __construct(SqsClient $sqs, $default, $prefix = '', $suffix = '', $group = '', $deduplicator = '')
     {
         parent::__construct($sqs, $default, $prefix);
 
+        $this->suffix = $suffix;
         $this->group = $group;
         $this->deduplicator = $deduplicator;
     }
@@ -99,6 +109,39 @@ class SqsFifoQueue extends SqsQueue
     public function later($delay, $job, $data = '', $queue = null)
     {
         throw new BadMethodCallException('FIFO queues do not support per-message delays.');
+    }
+
+    /**
+     * Get the queue or return the default.
+     *
+     * Laravel 7.x added support for a suffix, mainly to support Laravel Vapor.
+     * Since SQS FIFO queues must end in ".fifo", supporting a suffix config
+     * on these queues must be customized to work with the existing suffix.
+     *
+     * Additionally, this will provide support for the suffix config for older
+     * versions of Laravel, in case anyone wants to use it.
+     *
+     * @param  string|null  $queue
+     *
+     * @return string
+     */
+    public function getQueue($queue)
+    {
+        $queue = $queue ?: $this->default;
+
+        // Prefix support was not added until Laravel 5.1. Don't support a
+        // suffix on versions that don't even support a prefix.
+        if (!property_exists($this, 'prefix')) {
+            return $queue;
+        }
+
+        // Strip off the .fifo suffix to prepare for the config suffix.
+        $queue = Str::beforeLast($queue, '.fifo');
+
+        // Modify the queue name as needed and re-add the ".fifo" suffix.
+        return (filter_var($queue, FILTER_VALIDATE_URL) === false
+            ? rtrim($this->prefix, '/').'/'.Str::finish($queue, $this->suffix)
+            : $queue).'.fifo';
     }
 
     /**
