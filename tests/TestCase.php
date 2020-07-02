@@ -136,6 +136,7 @@ class TestCase extends PHPUnit_Framework_TestCase
             'region' => getenv('SQS_REGION') ?: '',
             'group' => 'default',
             'deduplicator' => 'unique',
+            'allow_delay' => false,
         ], 'sqs-fifo');
 
         $queue->addConnection([
@@ -145,6 +146,7 @@ class TestCase extends PHPUnit_Framework_TestCase
             'region' => getenv('SQS_REGION') ?: '',
             'group' => 'default',
             'deduplicator' => 'unique',
+            'allow_delay' => false,
         ], 'sqs-fifo-no-credentials');
     }
 
@@ -163,6 +165,23 @@ class TestCase extends PHPUnit_Framework_TestCase
         $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod->invokeArgs($object, $args);
+    }
+
+    /**
+     * Use reflection to get the value of a restricted (private/protected)
+     * property on an object.
+     *
+     * @param  object  $object
+     * @param  string  $property
+     *
+     * @return mixed
+     */
+    protected function getRestrictedValue($object, $property)
+    {
+        $reflectionProperty = new ReflectionProperty($object, $property);
+        $reflectionProperty->setAccessible(true);
+
+        return $reflectionProperty->getValue($object);
     }
 
     /**

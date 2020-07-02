@@ -6,6 +6,13 @@ use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 
 class ArrTest extends TestCase
 {
+    public function test_array_except()
+    {
+        $array = ['name' => 'taylor', 'age' => 26];
+        $this->assertEquals(['age' => 26], Arr::except($array, ['name']));
+        $this->assertEquals(['age' => 26], Arr::except($array, 'name'));
+    }
+
     public function test_array_only()
     {
         $array = ['name' => 'Desk', 'price' => 100, 'orders' => 10];
