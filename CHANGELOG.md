@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added support for queue suffixes that was added in Laravel 7.x.
 - Added an `allow_delay` config option to prevent the `later()` method from throwing an exception.
+- Added tests for checking if the connector created the queue properly with the given config.
 
 ## [1.2.0] - 2020-06-30
 ### Added
