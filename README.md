@@ -215,7 +215,7 @@ Finally, by default, all queued jobs will use the deduplicator defined in the co
 
 #### Delayed Jobs
 
-SQS FIFO queues do not support per-message delays, only per-queue delays. The desired delay is defined on the queue itself when the queue is setup in the Amazon Console. Attempting to set a delay on a job sent to a FIFO queue will have no affect. In order to delay a job, you can `push()` the job to an SQS FIFO queue that has been defined with a delivery delay.
+SQS FIFO queues do not support per-message delays, only per-queue delays. The desired delay is defined on the queue itself when the queue is setup in the Amazon Console. Attempting to set a delay on a job sent to a FIFO queue will have no effect. In order to delay a job, you can `push()` the job to an SQS FIFO queue that has been defined with a delivery delay.
 
 Since per-message delays are not supported, using the `later()` method to push a job to an SQS FIFO queue will throw a `BadMethodCallException` exception by default. However, this behavior can be changed using the `allow_delay` config option.
 
