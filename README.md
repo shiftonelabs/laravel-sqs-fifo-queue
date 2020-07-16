@@ -256,7 +256,7 @@ Usage:
 
 ``` php
 dispatch(
-    (new \App\Jobs\ProcessCoin)
+    (new \App\Jobs\ProcessCoin())
         ->onMessageGroup('quarter')
         ->withDeduplicator('unique')
 );
@@ -276,7 +276,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
-class ExampleNotification extends Notification implements ShouldQueue
+class InvoicePaid extends Notification implements ShouldQueue
 {
     use Queueable, SqsFifoQueueable;
 
@@ -288,8 +288,7 @@ Usage:
 
 ``` php
 $user->notify(
-    (new ExampleNotification)
-        ->onMessageGroup('important')
+    (new InvoicePaid($invoice))->onMessageGroup($invoice->id)
 );
 ```
 
