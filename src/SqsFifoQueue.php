@@ -10,6 +10,7 @@ use Illuminate\Queue\SqsQueue;
 use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Str;
+use Illuminate\Notifications\SendQueuedNotifications;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class SqsFifoQueue extends SqsQueue
@@ -292,18 +293,16 @@ class SqsFifoQueue extends SqsQueue
             return [];
         }
 
-        if (get_class($job) == 'Illuminate\Notifications\SendQueuedNotifications') {
-            $messageGroupId = isset($job->notification->messageGroupId) ? $job->notification->messageGroupId : null;
-            $deduplicator = isset($job->notification->deduplicator) ? $job->notification->deduplicator : null;
+        if ($job instanceof SendQueuedNotifications) {
+            $queueable = $job->notification;
         } else {
-            $messageGroupId = isset($job->messageGroupId) ? $job->messageGroupId : null;
-            $deduplicator = isset($job->deduplicator) ? $job->deduplicator : null;
+            $queueable = $job;
         }
 
         return array_filter(
             [
-                'group' => $messageGroupId,
-                'deduplicator' => $deduplicator,
+                'group' => isset($queueable->messageGroupId) ? $queueable->messageGroupId : null,
+                'deduplicator' => isset($queueable->deduplicator) ? $queueable->deduplicator : null,
             ],
             function ($value) {
                 return $value !== null;
