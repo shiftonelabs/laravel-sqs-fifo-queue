@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added an `allow_delay` config option to prevent the `later()` method from throwing an exception.
 - Added tests for checking if the connector created the queue properly with the given config.
 
+### Fixed
+- Fixed reading the message group and deduplicator set on queued notifications.
+
 ## [1.2.0] - 2020-06-30
 ### Added
 - Support for AWS STS temporary credentials session token in the config. ([#9](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/pull/9), [3493a99](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/commit/3493a99acd8005ca94e1c7d4cc0f86a1e6ab8a8f))
