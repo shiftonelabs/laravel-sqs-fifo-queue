@@ -7,6 +7,7 @@ use Mockery as m;
 use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
+use Illuminate\Support\Collection;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
@@ -72,7 +73,7 @@ class QueueTest extends TestCase
         $group = 'job-group';
         $notification = new Notification();
         $notification->onMessageGroup($group);
-        $job = new SendQueuedNotifications('notifiables', $notification);
+        $job = new SendQueuedNotifications(new Collection(['notifiables']), $notification);
         $closure = function ($message) use ($group) {
             if ($message['MessageGroupId'] != $group) {
                 return false;
@@ -233,7 +234,7 @@ class QueueTest extends TestCase
         $deduplication = 'content';
         $notification = new Notification();
         $notification->withDeduplicator($deduplication);
-        $job = new SendQueuedNotifications('notifiables', $notification);
+        $job = new SendQueuedNotifications(new Collection(['notifiables']), $notification);
         $closure = function ($message) use ($deduplication) {
             $deduplicator = $this->app->make('queue.sqs-fifo.deduplicator.'.$deduplication);
             $deduplicationId = $deduplicator->generate($message['MessageBody'], null);
