@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed reading the message group and deduplicator set on queued notifications.
+- Fixed reading the message group and deduplicator set on queued mailables.
 
 ## [1.2.0] - 2020-06-30
 ### Added

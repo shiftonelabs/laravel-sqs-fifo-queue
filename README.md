@@ -292,6 +292,36 @@ $user->notify(
 );
 ```
 
+Mailable:
+
+``` php
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
+
+class OrderShipped extends Mailable implements ShouldQueue
+{
+    use Queueable, SerializesModels, SqsFifoQueueable;
+
+    //
+}
+```
+
+Usage:
+
+``` php
+Mail::to($request->user())
+    ->cc($moreUsers)
+    ->bcc($evenMoreUsers)
+    ->queue(new OrderShipped($order)->onMessageGroup($order->number));
+```
+
 #### Custom Deduplicator
 
 The deduplicators work by generating a deduplication id that is sent to the queue. If two messages generate the same deduplication id, the second message is considered a duplicate, and the message will not be delivered if it is within the 5 minute deduplication interval.

@@ -7,10 +7,12 @@ use Mockery as m;
 use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
+use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
 use Illuminate\Notifications\SendQueuedNotifications;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Job;
+use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Mail;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\StandardJob;
 use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Notification;
 
@@ -71,6 +73,34 @@ class QueueTest extends TestCase
         $notification = new Notification();
         $notification->onMessageGroup($group);
         $job = new SendQueuedNotifications('notifiables', $notification);
+        $closure = function ($message) use ($group) {
+            if ($message['MessageGroupId'] != $group) {
+                return false;
+            }
+
+            return true;
+        };
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', '', 'queue-group', '');
+        $queue->setContainer($this->app);
+
+        $queue->push($job);
+    }
+
+    public function test_queue_sends_message_group_id_from_mailable()
+    {
+        if (!class_exists(SendQueuedMailable::class)) {
+            return $this->markTestSkipped('This version does not support mailables.');
+        }
+
+        $group = 'job-group';
+        $mailable = new Mail();
+        $mailable->onMessageGroup($group);
+        $job = new SendQueuedMailable($mailable);
         $closure = function ($message) use ($group) {
             if ($message['MessageGroupId'] != $group) {
                 return false;
@@ -204,6 +234,36 @@ class QueueTest extends TestCase
         $notification = new Notification();
         $notification->withDeduplicator($deduplication);
         $job = new SendQueuedNotifications('notifiables', $notification);
+        $closure = function ($message) use ($deduplication) {
+            $deduplicator = $this->app->make('queue.sqs-fifo.deduplicator.'.$deduplication);
+            $deduplicationId = $deduplicator->generate($message['MessageBody'], null);
+            if (!array_key_exists('MessageDeduplicationId', $message) || $deduplicationId != $message['MessageDeduplicationId']) {
+                return false;
+            }
+
+            return true;
+        };
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', '', '', '');
+        $queue->setContainer($this->app);
+
+        $queue->push($job);
+    }
+
+    public function test_queue_uses_deduplicator_from_mailable()
+    {
+        if (!class_exists(SendQueuedMailable::class)) {
+            return $this->markTestSkipped('This version does not support mailables.');
+        }
+
+        $deduplication = 'content';
+        $mailable = new Mail();
+        $mailable->withDeduplicator($deduplication);
+        $job = new SendQueuedMailable($mailable);
         $closure = function ($message) use ($deduplication) {
             $deduplicator = $this->app->make('queue.sqs-fifo.deduplicator.'.$deduplication);
             $deduplicationId = $deduplicator->generate($message['MessageBody'], null);

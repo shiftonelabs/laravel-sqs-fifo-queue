@@ -7,6 +7,7 @@ use Aws\Sqs\SqsClient;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Illuminate\Queue\SqsQueue;
+use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Str;
@@ -295,6 +296,8 @@ class SqsFifoQueue extends SqsQueue
 
         if ($job instanceof SendQueuedNotifications) {
             $queueable = $job->notification;
+        } elseif ($job instanceof SendQueuedMailable) {
+            $queueable = $job->mailable;
         } else {
             $queueable = $job;
         }
