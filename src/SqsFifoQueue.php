@@ -4,6 +4,7 @@ namespace ShiftOneLabs\LaravelSqsFifoQueue;
 
 use LogicException;
 use Aws\Sqs\SqsClient;
+use ReflectionProperty;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Illuminate\Queue\SqsQueue;
@@ -295,9 +296,13 @@ class SqsFifoQueue extends SqsQueue
         }
 
         if ($job instanceof SendQueuedNotifications) {
-            $queueable = $job->notification;
+            // The notification property was not made public until 5.4.12. To
+            // support 5.3.0 - 5.4.11, we use reflection.
+            $queueable = $this->getRestrictedValue($job, 'notification');
         } elseif ($job instanceof SendQueuedMailable) {
-            $queueable = $job->mailable;
+            // The mailable property was not made public until 5.4.12. To
+            // support 5.3.0 - 5.4.11, we use reflection.
+            $queueable = $this->getRestrictedValue($job, 'mailable');
         } else {
             $queueable = $job;
         }
@@ -327,5 +332,22 @@ class SqsFifoQueue extends SqsQueue
         $payload = json_decode($payload, true);
 
         return Arr::get($payload, $key, $default);
+    }
+
+    /**
+     * Use reflection to get the value of a restricted (private/protected)
+     * property on an object.
+     *
+     * @param  object  $object
+     * @param  string  $property
+     *
+     * @return mixed
+     */
+    protected function getRestrictedValue($object, $property)
+    {
+        $reflectionProperty = new ReflectionProperty($object, $property);
+        $reflectionProperty->setAccessible(true);
+
+        return $reflectionProperty->getValue($object);
     }
 }
