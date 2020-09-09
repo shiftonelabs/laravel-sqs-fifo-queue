@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Updated CI configs to run tests on Laravel 8.x.
+- Updated readme with new version information.
 
 ## [2.0.0] - 2020-07-17
 ### Added
