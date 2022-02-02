@@ -229,6 +229,10 @@ Setting the `allow_delay` config option to `true` for a queue will allow the `la
 
 If you need to change the group or the deduplicator for a specific job, you will need access to the `onMessageGroup()` and `withDeduplicator()` methods. These methods are provided through the `ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable` trait. Once you add this trait to your job class, you can change the group and/or the deduplicator for that specific job without affecting any other jobs on the queue.
 
+
+#### 🚨 An Important Note About Event Listeners
+Please note, at this time the package does not support event listeners. You will need to convert your events to jobs or notifications to utilize the features offered in this package. See [here](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/issues/11) for more details.
+
 #### Code Example
 
 Job:
