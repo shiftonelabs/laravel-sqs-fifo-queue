@@ -2,6 +2,7 @@
 
 namespace ShiftOneLabs\LaravelSqsFifoQueue;
 
+use Illuminate\Support\Str;
 use LogicException;
 use Aws\Sqs\SqsClient;
 use ReflectionProperty;
@@ -11,7 +12,6 @@ use Illuminate\Queue\SqsQueue;
 use Illuminate\Mail\SendQueuedMailable;
 use Illuminate\Queue\CallQueuedHandler;
 use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
-use ShiftOneLabs\LaravelSqsFifoQueue\Support\Str;
 use Illuminate\Notifications\SendQueuedNotifications;
 use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 

@@ -15,10 +15,10 @@
         "source": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue"
     },
     "require": {
-        "php": ">=5.5.0",
+        "php": "^8.0.0",
         "aws/aws-sdk-php": "~3.0",
         "illuminate/queue": ">=4.1",
-        "illuminate/support": ">=4.1",
+        "illuminate/support": "^9.0.0",
         "ramsey/uuid": ">=3.0"
     },
     "require-dev": {

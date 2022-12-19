@@ -2,7 +2,7 @@
 
 namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
 
-use ShiftOneLabs\LaravelSqsFifoQueue\Support\Str;
+use Illuminate\Support\Str;
 
 class StrTest extends TestCase
 {
