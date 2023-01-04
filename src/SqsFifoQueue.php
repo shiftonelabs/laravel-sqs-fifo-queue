@@ -1,49 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue;
 
-use LogicException;
 use Aws\Sqs\SqsClient;
-use ReflectionProperty;
 use BadMethodCallException;
-use InvalidArgumentException;
-use Illuminate\Queue\SqsQueue;
-use Illuminate\Mail\SendQueuedMailable;
-use Illuminate\Queue\CallQueuedHandler;
-use Bisnow\LaravelSqsFifoQueue\Support\Arr;
-use Bisnow\LaravelSqsFifoQueue\Support\Str;
-use Illuminate\Notifications\SendQueuedNotifications;
 use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
+use Illuminate\Mail\SendQueuedMailable;
+use Illuminate\Notifications\SendQueuedNotifications;
+use Illuminate\Queue\SqsQueue;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
+use LogicException;
 
 class SqsFifoQueue extends SqsQueue
 {
     /**
      * The queue name suffix.
-     *
-     * @var string
      */
-    protected $suffix;
+    protected string $suffix;
 
     /**
      * The message group id of the fifo pipe in the queue.
-     *
-     * @var string
      */
-    protected $group;
+    protected string $group;
 
     /**
      * The driver to generate the deduplication id for the message.
-     *
-     * @var string
      */
-    protected $deduplicator;
+    protected string $deduplicator = '';
 
     /**
      * The flag to check if this queue is setup for delay.
-     *
-     * @var bool
      */
-    protected $allowDelay;
+    protected bool $allowDelay;
+
+    /**
+     * Get the current version of laravel.
+     */
+    protected float $appVersion;
 
     /**
      * Create a new Amazon SQS queue instance.
@@ -58,10 +55,11 @@ class SqsFifoQueue extends SqsQueue
      *
      * @return void
      */
-    public function __construct(SqsClient $sqs, $default, $prefix = '', $suffix = '', $group = '', $deduplicator = '', $allowDelay = false)
+    public function __construct(SqsClient $sqs, string $default, string $prefix = '', string $suffix = '', string $group = '', string $deduplicator = '', bool $allowDelay = false)
     {
         parent::__construct($sqs, $default, $prefix);
 
+        $this->appVersion = floatval(app()->version());
         $this->suffix = $suffix;
         $this->group = $group;
         $this->deduplicator = $deduplicator;
@@ -71,11 +69,11 @@ class SqsFifoQueue extends SqsQueue
     /**
      * Set the underlying SQS instance.
      *
-     * @param  \Aws\Sqs\SqsClient  $sqs
+     * @param \Aws\Sqs\SqsClient $sqs
      *
-     * @return \Bisnow\LaravelSqsFifoQueue\SqsFifoQueue
+     * @return self
      */
-    public function setSqs(SqsClient $sqs)
+    public function setSqs(SqsClient $sqs): self
     {
         $this->sqs = $sqs;
 
@@ -125,6 +123,10 @@ class SqsFifoQueue extends SqsQueue
     public function later($delay, $job, $data = '', $queue = null)
     {
         if ($this->allowDelay) {
+            if ($this->appVersion > 8.24) {
+                $this->setContainer(\app());
+            }
+
             return $this->push($job, $data, $queue);
         }
 
@@ -149,19 +151,35 @@ class SqsFifoQueue extends SqsQueue
     {
         $queue = $queue ?: $this->default;
 
-        // Prefix support was not added until Laravel 5.1. Don't support a
-        // suffix on versions that don't even support a prefix.
-        if (!property_exists($this, 'prefix')) {
-            return $queue;
+        // Strip off the .fifo suffix to prepare for the config suffix.
+        if ($this->appVersion > 6.0) {
+            $queue = Str::beforeLast($queue, '.fifo');
         }
 
-        // Strip off the .fifo suffix to prepare for the config suffix.
-        $queue = Str::beforeLast($queue, '.fifo');
+        if ($this->appVersion < 6.0) {
+            $queue = Str::replaceLast('.fifo', '', $queue);
+        }
+
+        if (\is_bool($this->prefix)) {
+            $this->prefix = '';
+        }
 
         // Modify the queue name as needed and re-add the ".fifo" suffix.
-        return (filter_var($queue, FILTER_VALIDATE_URL) === false
-            ? rtrim($this->prefix, '/').'/'.Str::finish($queue, $this->suffix)
-            : $queue).'.fifo';
+        return filter_var($queue, FILTER_VALIDATE_URL) === false
+            ? $this->suffixQueue($queue, $this->suffix)
+            : $queue . '.fifo';
+    }
+
+    /**
+     * Add the given suffix to the given queue name.
+     *
+     * @param  string  $queue
+     * @param  string  $suffix
+     * @return string
+     */
+    protected function suffixQueue($queue, $suffix = '')
+    {
+        return rtrim($this->prefix, '/') . '/' . Str::finish($queue, $suffix) . '.fifo';
     }
 
     /**
@@ -182,7 +200,7 @@ class SqsFifoQueue extends SqsQueue
             return false;
         }
 
-        if ($this->container->bound($key = 'queue.sqs-fifo.deduplicator.'.$driver)) {
+        if ($this->container->bound($key = 'queue.sqs-fifo.deduplicator.' . $driver)) {
             $deduplicator = $this->container->make($key);
 
             if ($deduplicator instanceof Deduplicator) {
@@ -208,61 +226,9 @@ class SqsFifoQueue extends SqsQueue
      * @throws \InvalidArgumentException
      * @throws \Illuminate\Queue\InvalidPayloadException
      */
-    protected function createPayload($job, $data = '', $queue = null)
+    protected function createPayload($job, $data = '', $queue = null): string
     {
-        $payload = parent::createPayload($job, $data, $queue);
-
-        if (!is_object($job)) {
-            return $payload;
-        }
-
-        // Laravel 5.4 reworked payload generate. If the parent class has
-        // the `createPayloadArray` method, it has already been called
-        // through the parent call to the "createPayload" method.
-        if (method_exists(get_parent_class($this), 'createPayloadArray')) {
-            return $payload;
-        }
-
-        // Laravel < 5.0 doesn't support pushing job instances onto the queue.
-        // We must regenerate the payload using just the class name, instead
-        // of the job instance, so the queue worker can handle the job.
-        if (!class_exists(CallQueuedHandler::class)) {
-            $payload = parent::createPayload(get_class($job), $data, $queue);
-        }
-
-        // Laravel <= 5.3 has the `setMeta` method. This is the method
-        // used to add meta data to the payload generated by the
-        // parent call to `createPayload` above.
-        if (method_exists($this, 'setMeta')) {
-            return $this->appendPayload($payload, $job);
-        }
-
-        // If neither of the above methods exist, we must be on a version
-        // of Laravel that is not currently supported.
-        throw new LogicException('"createPayloadArray" and "setMeta" methods both missing. This version of Laravel not supported.');
-    }
-
-    /**
-     * Append meta data to the payload for Laravel <= 5.3.
-     *
-     * @param  string  $payload
-     * @param  mixed  $job
-     *
-     * @return string
-     */
-    protected function appendPayload($payload, $job)
-    {
-        $meta = $this->getMetaPayload($job);
-
-        if (array_key_exists('group', $meta)) {
-            $payload = $this->setMeta($payload, 'group', $meta['group']);
-        }
-
-        if (array_key_exists('deduplicator', $meta)) {
-            $payload = $this->setMeta($payload, 'deduplicator', $meta['deduplicator']);
-        }
-
-        return $payload;
+        return parent::createPayload($job, $queue, $data);
     }
 
     /**
@@ -274,10 +240,10 @@ class SqsFifoQueue extends SqsQueue
      *
      * @return array
      */
-    protected function createPayloadArray($job, $data = '', $queue = null)
+    protected function createPayloadArray($job, $data = '', $queue = null): array
     {
         return array_merge(
-            parent::createPayloadArray($job, $data, $queue),
+            parent::createPayloadArray($job, $queue, $data),
             $this->getMetaPayload($job)
         );
     }
@@ -291,20 +257,18 @@ class SqsFifoQueue extends SqsQueue
      */
     protected function getMetaPayload($job)
     {
-        if (!is_object($job)) {
+        if (! is_object($job)) {
             return [];
         }
 
+        $queueable = $job;
+
         if ($job instanceof SendQueuedNotifications) {
-            // The notification property was not made public until 5.4.12. To
-            // support 5.3.0 - 5.4.11, we use reflection.
-            $queueable = $this->getRestrictedValue($job, 'notification');
-        } elseif ($job instanceof SendQueuedMailable) {
-            // The mailable property was not made public until 5.4.12. To
-            // support 5.3.0 - 5.4.11, we use reflection.
-            $queueable = $this->getRestrictedValue($job, 'mailable');
-        } else {
-            $queueable = $job;
+            $queueable = $job->notification;
+        }
+
+        if ($job instanceof SendQueuedMailable) {
+            $queueable = $job->mailable;
         }
 
         return array_filter(
@@ -332,22 +296,5 @@ class SqsFifoQueue extends SqsQueue
         $payload = json_decode($payload, true);
 
         return Arr::get($payload, $key, $default);
-    }
-
-    /**
-     * Use reflection to get the value of a restricted (private/protected)
-     * property on an object.
-     *
-     * @param  object  $object
-     * @param  string  $property
-     *
-     * @return mixed
-     */
-    protected function getRestrictedValue($object, $property)
-    {
-        $reflectionProperty = new ReflectionProperty($object, $property);
-        $reflectionProperty->setAccessible(true);
-
-        return $reflectionProperty->getValue($object);
     }
 }

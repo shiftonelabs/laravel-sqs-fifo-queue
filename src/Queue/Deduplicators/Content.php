@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators;
 
 use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
@@ -11,13 +13,8 @@ class Content implements Deduplicator
      *
      * This deduplicator should be used for queues that should treat
      * identical payloads as duplicate messages.
-     *
-     * @param  string  $payload
-     * @param  string  $queue
-     *
-     * @return string
      */
-    public function generate($payload, $queue)
+    public function generate(string $payload, ?string $queue): string
     {
         return hash('sha256', $payload);
     }

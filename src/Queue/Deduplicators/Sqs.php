@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators;
 
 use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
@@ -11,13 +13,8 @@ class Sqs implements Deduplicator
      *
      * This deduplicator should be used for queues where Amazon's
      * ContentBasedDeduplication features is enabled on SQS.
-     *
-     * @param  string  $payload
-     * @param  string  $queue
-     *
-     * @return bool
      */
-    public function generate($payload, $queue)
+    public function generate(string $payload, ?string $queue): bool
     {
         return false;
     }

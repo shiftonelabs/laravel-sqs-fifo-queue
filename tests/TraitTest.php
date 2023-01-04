@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue\Tests;
 
 use Bisnow\LaravelSqsFifoQueue\Tests\Fakes\Job;

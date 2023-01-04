@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue;
 
-use Illuminate\Support\ServiceProvider;
+use Bisnow\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
 use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Sqs;
 use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Unique;
-use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
-use Bisnow\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
+use Illuminate\Support\ServiceProvider;
 
 class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
 {
@@ -34,16 +36,9 @@ class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
         if ($app->bound('queue')) {
             $this->extendManager($app['queue']);
         } else {
-            // "afterResolving" not introduced until 5.0. Before 5.0 uses "resolving".
-            if (method_exists($app, 'afterResolving')) {
-                $app->afterResolving('queue', function ($manager) {
-                    $this->extendManager($manager);
-                });
-            } else {
-                $app->resolving('queue', function ($manager) {
-                    $this->extendManager($manager);
-                });
-            }
+            $app->afterResolving('queue', function ($manager) {
+                $this->extendManager($manager);
+            });
         }
     }
 

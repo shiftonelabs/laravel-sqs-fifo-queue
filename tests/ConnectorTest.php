@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue\Tests;
 
-use InvalidArgumentException;
-use Bisnow\LaravelSqsFifoQueue\Support\Arr;
-use Bisnow\LaravelSqsFifoQueue\SqsFifoQueue;
 use Bisnow\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
+use Bisnow\LaravelSqsFifoQueue\SqsFifoQueue;
+use Illuminate\Support\Arr;
+use InvalidArgumentException;
 
 class ConnectorTest extends TestCase
 {
     public function test_sqs_fifo_driver_returns_sqs_fifo_queue()
     {
-        $config = $this->app['config']['queue.connections.sqs-fifo'];
+        $config = config('queue.connections.sqs-fifo');
         $connector = new SqsFifoConnector();
 
         $connection = $connector->connect($config);
@@ -24,7 +26,7 @@ class ConnectorTest extends TestCase
         $config = ['driver' => 'sqs-fifo', 'queue' => 'test'];
         $connector = new SqsFifoConnector();
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $connector->connect($config);
     }

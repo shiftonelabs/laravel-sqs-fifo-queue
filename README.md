@@ -1,61 +1,29 @@
 # laravel-sqs-fifo-queue
 
-[![Latest Version on Packagist][ico-version]][link-packagist]
+<!-- [![Latest Version on Packagist][ico-version]][link-packagist] -->
 [![Software License][ico-license]](LICENSE.txt)
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
-[![Total Downloads][ico-downloads]][link-downloads]
+<!-- [![Build Status][ico-travis]][link-travis] -->
+<!-- [![Coverage Status][ico-scrutinizer]][link-scrutinizer] -->
+<!-- [![Quality Score][ico-code-quality]][link-code-quality] -->
+<!-- [![Total Downloads][ico-downloads]][link-downloads] -->
 
-This Laravel/Lumen package provides a queue driver for Amazon's SQS FIFO queues. While Laravel works with Amazon's SQS standard queues out of the box, FIFO queues are slightly different and are not handled properly by Laravel. That is where this package comes in.
+This Laravel package provides a queue driver for Amazon's SQS FIFO queues. While Laravel works with Amazon's SQS standard queues out of the box, FIFO queues are slightly different and are not handled properly by Laravel. That is where this package comes in.
 
 ## Versions
 
-This package has been tested on Laravel 4.1 through Laravel 8.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+This package has been tested on Laravel 5.7 through Laravel 9.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
 
 ## Install
 
 Via Composer
 
 ``` bash
-$ composer require bisnow/laravel-sqs-fifo-queue
+composer require bisnow/laravel-sqs-fifo-queue
 ```
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
-#### Laravel 5.5+, 6.x, 7.x, 8.x (5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
-
-This package uses auto package discovery. The service provider will automatically be registered.
-
-#### Laravel 5.0 - 5.4
-
-Open `config/app.php` and add following line to the providers array:
-
-``` php
-Bisnow\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
-```
-
-#### Laravel 4 (4.1, 4.2)
-
-Open `app/config/app.php` and add following line to the providers array:
-
-``` php
-'Bisnow\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider',
-```
-
-#### Lumen 5, 6, 7, 8 (5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
-
-Open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
-
-``` php
-$app->register(Bisnow\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class);
-```
-
 ## Configuration
-
-#### Laravel/Lumen 5.1+, 6.x, 7.x, 8.x (5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
-
-If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
 
 Now, for both Laravel and Lumen, open `config/queue.php` and add the following entry to the `connections` array.
 
@@ -79,85 +47,7 @@ Example .env file:
     SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
     SQS_ALLOW_DELAY=false
 
-If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file for >= 5.7, or `QUEUE_DRIVER=sqs-fifo` in the `.env` file for < 5.7.
-
-#### Laravel/Lumen 5.0
-
-If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
-
-Now, for both Laravel and Lumen, open `config/queue.php` and add the following entry to the `connections` array:
-
-    'sqs-fifo' => [
-        'driver' => 'sqs-fifo',
-        'key'    => env('SQS_KEY'),
-        'secret' => env('SQS_SECRET'),
-        'queue'  => env('SQS_PREFIX').'/your-queue-name',
-        'region' => 'your-queue-region',
-        'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => env('SQS_ALLOW_DELAY'),
-    ],
-
-Example .env file:
-
-    SQS_KEY=ABCDEFGHIJKLMNOPQRST
-    SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
-    SQS_ALLOW_DELAY=false
-
-If you'd like this to be the default connection, also set `QUEUE_DRIVER=sqs-fifo` in the `.env` file.
-
-#### Laravel 4
-
-Open `app/config/queue.php` and add the following entry to the `connections` array:
-
-    'sqs-fifo' => array(
-        'driver' => 'sqs-fifo',
-        'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
-        'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-        'queue'  => 'your-queue-url',    // ex: https://sqs.us-east-2.amazonaws.com/123456789012/queuename.fifo
-        'region' => 'your-queue-region', // ex: us-east-2
-        'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => false,
-    ),
-
-If you'd like this to be the default connection, also update the `'default'` key to `'sqs-fifo'`.
-
-#### Capsule
-
-If using the `illuminate\queue` component Capsule outside of Lumen/Laravel:
-
-``` php
-use Illuminate\Queue\Capsule\Manager as Queue;
-use Bisnow\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
-
-$queue = new Queue;
-
-$queue->addConnection([
-    'driver' => 'sqs-fifo',
-    'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
-    'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    /**
-     * Set "prefix"/"suffix" and/or "queue" depending on version, as described for Laravel versions above
-     * 'prefix' => 'your-prefix',
-     * 'suffix' => 'your-suffix',
-     * 'queue' => 'your-queue-name',
-     */
-    'region' => 'your-queue-region', // ex: us-east-2
-    'group' => 'default',
-    'deduplicator' => 'unique',
-    'allow_delay' => false,
-], 'sqs-fifo');
-
-// Make this Capsule instance available globally via static methods... (optional)
-$queue->setAsGlobal();
-
-// Register the 'queue' alias in the Container, then register the SQS FIFO provider.
-$app = $queue->getContainer();
-$app->instance('queue', $queue->getQueueManager());
-(new LaravelSqsFifoQueueServiceProvider($app))->register();
-```
+If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file.
 
 #### Credentials
 
@@ -174,8 +64,6 @@ The `suffix` config option is used to support queues for different environments 
 This functionality was introduced to plain SQS queues in Laravel 7.x, primarily to support Laravel Vapor. More details are available on [the PR for the feature](https://github.com/laravel/framework/pull/31784).
 
 There are two differences between the standard Laravel implementation and this one:
-
-- This package adds support for queue suffixes all the way back to Laravel 5.1.
 - SQS FIFO queues must end with a `.fifo` suffix. As seen in the example above, any `suffix` defined in the config will come before the required `.fifo` suffix. Do not specify `.fifo` in the suffix config or the queue name will not generate correctly.
 
 ## Usage
@@ -372,11 +260,11 @@ Contributions are welcome. Please see [CONTRIBUTING](CONTRIBUTING.md) for detail
 
 ## Security
 
-If you discover any security related issues, please email patrick@bisnow.com instead of using the issue tracker.
+If you discover any security related issues, please email tech@bisnow.com instead of using the issue tracker.
 
 ## Credits
-
-- [Patrick Carlo-Hickman][link-author]
+- [Wes Hulette][link-author]
+- [Patrick Carlo-Hickman][link-original-author]
 - [All Contributors][link-contributors]
 
 ## License
@@ -395,5 +283,6 @@ The MIT License (MIT). Please see [License File](LICENSE.txt) for more informati
 [link-scrutinizer]: https://scrutinizer-ci.com/g/bisnow/laravel-sqs-fifo-queue/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/bisnow/laravel-sqs-fifo-queue
 [link-downloads]: https://packagist.org/packages/bisnow/laravel-sqs-fifo-queue
-[link-author]: https://github.com/patrickcarlohickman
+[link-author]: https://github.com/jwhulette
+[link-original-author]: https://github.com/patrickcarlohickman
 [link-contributors]: ../../contributors

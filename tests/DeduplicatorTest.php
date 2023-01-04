@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue\Tests;
 
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Callback;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
 use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Sqs;
 use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Unique;
-use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
-use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Callback;
 
 class DeduplicatorTest extends TestCase
 {

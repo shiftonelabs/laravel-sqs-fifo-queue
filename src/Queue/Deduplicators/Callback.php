@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators;
 
-use Closure;
 use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
+use Closure;
 
 class Callback implements Deduplicator
 {
@@ -32,13 +34,8 @@ class Callback implements Deduplicator
      * This deduplicator can be used to allow a developer to quickly generate
      * a custom deduplicator using a Closure, without having to implement
      * a completely new deduplicator object.
-     *
-     * @param  string  $payload
-     * @param  string  $queue
-     *
-     * @return string
      */
-    public function generate($payload, $queue)
+    public function generate(string $payload, ?string $queue): string
     {
         return call_user_func($this->callback, $payload, $queue);
     }
