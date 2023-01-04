@@ -1,9 +1,9 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators;
+namespace Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators;
 
 use Closure;
-use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
+use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class Callback implements Deduplicator
 {

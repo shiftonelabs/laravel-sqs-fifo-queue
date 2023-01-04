@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0] - 2020-06-30
 ### Added
-- Support for AWS STS temporary credentials session token in the config. ([#9](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/pull/9), [3493a99](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/commit/3493a99acd8005ca94e1c7d4cc0f86a1e6ab8a8f))
+- Support for AWS STS temporary credentials session token in the config. ([#9](https://github.com/bisnow/laravel-sqs-fifo-queue/pull/9), [3493a99](https://github.com/bisnow/laravel-sqs-fifo-queue/commit/3493a99acd8005ca94e1c7d4cc0f86a1e6ab8a8f))
 
 ### Changed
 - Updated readme with newer queue connection environment variable name as of Laravel 5.7.
@@ -74,13 +74,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release!
 
-[Unreleased]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/2.0.1...HEAD
-[2.0.1]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.2.0...2.0.0
-[1.2.0]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.1.3...1.2.0
-[1.1.3]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.1.2...1.1.3
-[1.1.2]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.1.1...1.1.2
-[1.1.1]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.1.0...1.1.1
-[1.1.0]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.0.2...1.1.0
-[1.0.2]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.0.1...1.0.2
-[1.0.1]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/1.0.0...1.0.1
+[Unreleased]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/2.0.1...HEAD
+[2.0.1]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.2.0...2.0.0
+[1.2.0]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.1.3...1.2.0
+[1.1.3]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.1.2...1.1.3
+[1.1.2]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.0.2...1.1.0
+[1.0.2]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/bisnow/laravel-sqs-fifo-queue/compare/1.0.0...1.0.1

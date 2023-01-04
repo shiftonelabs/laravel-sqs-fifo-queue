@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/shiftonelabs/laravel-sqs-fifo-queue).
+We accept contributions via Pull Requests on [Github](https://github.com/bisnow/laravel-sqs-fifo-queue).
 
 
 ## Pull Requests

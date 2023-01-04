@@ -1,9 +1,9 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
+namespace Bisnow\LaravelSqsFifoQueue\Tests;
 
-use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Job;
-use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\StandardJob;
+use Bisnow\LaravelSqsFifoQueue\Tests\Fakes\Job;
+use Bisnow\LaravelSqsFifoQueue\Tests\Fakes\StandardJob;
 
 class IntegrationTest extends TestCase
 {

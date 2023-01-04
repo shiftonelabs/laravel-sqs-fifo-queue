@@ -1,8 +1,8 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
+namespace Bisnow\LaravelSqsFifoQueue\Tests;
 
-use ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes\Job;
+use Bisnow\LaravelSqsFifoQueue\Tests\Fakes\Job;
 
 class TraitTest extends TestCase
 {

@@ -1,18 +1,18 @@
 {
-    "name": "shiftonelabs/laravel-sqs-fifo-queue",
+    "name": "bisnow/laravel-sqs-fifo-queue",
     "description": "Adds a Laravel queue driver for Amazon SQS FIFO queues.",
     "keywords": ["laravel", "lumen", "illuminate", "queue", "sqs", "fifo", "aws"],
-    "homepage": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue",
+    "homepage": "https://github.com/bisnow/laravel-sqs-fifo-queue",
     "license": "MIT",
     "authors": [
         {
-            "name": "Patrick Carlo-Hickman",
-            "email": "patrick@shiftonelabs.com"
+            "name": "Wes Hulette",
+            "email": "wes.hulette@bisnow.com"
         }
     ],
     "support": {
-        "issues": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue/issues",
-        "source": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue"
+        "issues": "https://github.com/bisnow/laravel-sqs-fifo-queue/issues",
+        "source": "https://github.com/bisnow/laravel-sqs-fifo-queue"
     },
     "require": {
         "php": ">=5.5.0",
@@ -31,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ShiftOneLabs\\LaravelSqsFifoQueue\\": "src/"
+            "Bisnow\\LaravelSqsFifoQueue\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ShiftOneLabs\\LaravelSqsFifoQueue\\Tests\\": "tests/"
+            "Bisnow\\LaravelSqsFifoQueue\\Tests\\": "tests/"
         }
     },
     "config": {
@@ -46,7 +46,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ShiftOneLabs\\LaravelSqsFifoQueue\\LaravelSqsFifoQueueServiceProvider"
+                "Bisnow\\LaravelSqsFifoQueue\\LaravelSqsFifoQueueServiceProvider"
             ]
         }
     }

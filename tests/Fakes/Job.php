@@ -1,8 +1,8 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes;
+namespace Bisnow\LaravelSqsFifoQueue\Tests\Fakes;
 
-use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
+use Bisnow\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
 class Job
 {

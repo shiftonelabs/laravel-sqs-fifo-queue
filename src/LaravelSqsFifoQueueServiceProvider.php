@@ -1,12 +1,12 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue;
+namespace Bisnow\LaravelSqsFifoQueue;
 
 use Illuminate\Support\ServiceProvider;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Sqs;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Unique;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Sqs;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Unique;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
+use Bisnow\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
 
 class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
 {
