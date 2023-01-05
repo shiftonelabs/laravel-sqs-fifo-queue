@@ -1,11 +1,8 @@
 # laravel-sqs-fifo-queue
 
-<!-- [![Latest Version on Packagist][ico-version]][link-packagist] -->
+[![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.txt)
-<!-- [![Build Status][ico-travis]][link-travis] -->
-<!-- [![Coverage Status][ico-scrutinizer]][link-scrutinizer] -->
-<!-- [![Quality Score][ico-code-quality]][link-code-quality] -->
-<!-- [![Total Downloads][ico-downloads]][link-downloads] -->
+[![Total Downloads][ico-downloads]][link-downloads]
 
 This Laravel package provides a queue driver for Amazon's SQS FIFO queues. While Laravel works with Amazon's SQS standard queues out of the box, FIFO queues are slightly different and are not handled properly by Laravel. That is where this package comes in.
 
@@ -273,15 +270,9 @@ The MIT License (MIT). Please see [License File](LICENSE.txt) for more informati
 
 [ico-version]: https://img.shields.io/packagist/v/bisnow/laravel-sqs-fifo-queue.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/bisnow/laravel-sqs-fifo-queue/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/bisnow/laravel-sqs-fifo-queue.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/bisnow/laravel-sqs-fifo-queue.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/bisnow/laravel-sqs-fifo-queue.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/bisnow/laravel-sqs-fifo-queue
-[link-travis]: https://travis-ci.org/bisnow/laravel-sqs-fifo-queue
-[link-scrutinizer]: https://scrutinizer-ci.com/g/bisnow/laravel-sqs-fifo-queue/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/bisnow/laravel-sqs-fifo-queue
 [link-downloads]: https://packagist.org/packages/bisnow/laravel-sqs-fifo-queue
 [link-author]: https://github.com/jwhulette
 [link-original-author]: https://github.com/patrickcarlohickman

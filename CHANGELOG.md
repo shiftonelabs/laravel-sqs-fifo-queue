@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2023-01-05
+- Updated package naming to Bisnow
+- Updated readme to reflect removals
+- Removed support for Lumen
+- Removed support for Laravel < 5.7
+
 ## [2.0.1] - 2020-09-09
 ### Changed
 - Updated CI configs to run tests on Laravel 8.x.
