@@ -2,60 +2,25 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.txt)
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This Laravel/Lumen package provides a queue driver for Amazon's SQS FIFO queues. While Laravel works with Amazon's SQS standard queues out of the box, FIFO queues are slightly different and are not handled properly by Laravel. That is where this package comes in.
+This Laravel package provides a queue driver for Amazon's SQS FIFO queues. While Laravel works with Amazon's SQS standard queues out of the box, FIFO queues are slightly different and are not handled properly by Laravel. That is where this package comes in.
 
 ## Versions
 
-This package has been tested on Laravel 4.1 through Laravel 8.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+This package has been tested on Laravel 5.7 through Laravel 9.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
 
 ## Install
 
 Via Composer
 
 ``` bash
-$ composer require shiftonelabs/laravel-sqs-fifo-queue
+composer require bisnow/laravel-sqs-fifo-queue
 ```
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
-#### Laravel 5.5+, 6.x, 7.x, 8.x (5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
-
-This package uses auto package discovery. The service provider will automatically be registered.
-
-#### Laravel 5.0 - 5.4
-
-Open `config/app.php` and add following line to the providers array:
-
-``` php
-ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
-```
-
-#### Laravel 4 (4.1, 4.2)
-
-Open `app/config/app.php` and add following line to the providers array:
-
-``` php
-'ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider',
-```
-
-#### Lumen 5, 6, 7, 8 (5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
-
-Open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
-
-``` php
-$app->register(ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class);
-```
-
 ## Configuration
-
-#### Laravel/Lumen 5.1+, 6.x, 7.x, 8.x (5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
-
-If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
 
 Now, for both Laravel and Lumen, open `config/queue.php` and add the following entry to the `connections` array.
 
@@ -79,85 +44,7 @@ Example .env file:
     SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
     SQS_ALLOW_DELAY=false
 
-If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file for >= 5.7, or `QUEUE_DRIVER=sqs-fifo` in the `.env` file for < 5.7.
-
-#### Laravel/Lumen 5.0
-
-If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
-
-Now, for both Laravel and Lumen, open `config/queue.php` and add the following entry to the `connections` array:
-
-    'sqs-fifo' => [
-        'driver' => 'sqs-fifo',
-        'key'    => env('SQS_KEY'),
-        'secret' => env('SQS_SECRET'),
-        'queue'  => env('SQS_PREFIX').'/your-queue-name',
-        'region' => 'your-queue-region',
-        'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => env('SQS_ALLOW_DELAY'),
-    ],
-
-Example .env file:
-
-    SQS_KEY=ABCDEFGHIJKLMNOPQRST
-    SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
-    SQS_ALLOW_DELAY=false
-
-If you'd like this to be the default connection, also set `QUEUE_DRIVER=sqs-fifo` in the `.env` file.
-
-#### Laravel 4
-
-Open `app/config/queue.php` and add the following entry to the `connections` array:
-
-    'sqs-fifo' => array(
-        'driver' => 'sqs-fifo',
-        'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
-        'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-        'queue'  => 'your-queue-url',    // ex: https://sqs.us-east-2.amazonaws.com/123456789012/queuename.fifo
-        'region' => 'your-queue-region', // ex: us-east-2
-        'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => false,
-    ),
-
-If you'd like this to be the default connection, also update the `'default'` key to `'sqs-fifo'`.
-
-#### Capsule
-
-If using the `illuminate\queue` component Capsule outside of Lumen/Laravel:
-
-``` php
-use Illuminate\Queue\Capsule\Manager as Queue;
-use ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
-
-$queue = new Queue;
-
-$queue->addConnection([
-    'driver' => 'sqs-fifo',
-    'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
-    'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    /**
-     * Set "prefix"/"suffix" and/or "queue" depending on version, as described for Laravel versions above
-     * 'prefix' => 'your-prefix',
-     * 'suffix' => 'your-suffix',
-     * 'queue' => 'your-queue-name',
-     */
-    'region' => 'your-queue-region', // ex: us-east-2
-    'group' => 'default',
-    'deduplicator' => 'unique',
-    'allow_delay' => false,
-], 'sqs-fifo');
-
-// Make this Capsule instance available globally via static methods... (optional)
-$queue->setAsGlobal();
-
-// Register the 'queue' alias in the Container, then register the SQS FIFO provider.
-$app = $queue->getContainer();
-$app->instance('queue', $queue->getQueueManager());
-(new LaravelSqsFifoQueueServiceProvider($app))->register();
-```
+If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file.
 
 #### Credentials
 
@@ -174,8 +61,6 @@ The `suffix` config option is used to support queues for different environments 
 This functionality was introduced to plain SQS queues in Laravel 7.x, primarily to support Laravel Vapor. More details are available on [the PR for the feature](https://github.com/laravel/framework/pull/31784).
 
 There are two differences between the standard Laravel implementation and this one:
-
-- This package adds support for queue suffixes all the way back to Laravel 5.1.
 - SQS FIFO queues must end with a `.fifo` suffix. As seen in the example above, any `suffix` defined in the config will come before the required `.fifo` suffix. Do not specify `.fifo` in the suffix config or the queue name will not generate correctly.
 
 ## Usage
@@ -227,7 +112,7 @@ Setting the `allow_delay` config option to `true` for a queue will allow the `la
 
 #### Per-Job Group and Deduplicator
 
-If you need to change the group or the deduplicator for a specific job, you will need access to the `onMessageGroup()` and `withDeduplicator()` methods. These methods are provided through the `ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable` trait. Once you add this trait to your job class, you can change the group and/or the deduplicator for that specific job without affecting any other jobs on the queue.
+If you need to change the group or the deduplicator for a specific job, you will need access to the `onMessageGroup()` and `withDeduplicator()` methods. These methods are provided through the `Bisnow\LaravelSqsFifoQueue\Bus\SqsFifoQueueable` trait. Once you add this trait to your job class, you can change the group and/or the deduplicator for that specific job without affecting any other jobs on the queue.
 
 #### Code Example
 
@@ -242,7 +127,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
+use Bisnow\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
 class ProcessCoin implements ShouldQueue
 {
@@ -274,7 +159,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
+use Bisnow\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
 class InvoicePaid extends Notification implements ShouldQueue
 {
@@ -303,7 +188,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
+use Bisnow\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
 class OrderShipped extends Mailable implements ShouldQueue
 {
@@ -328,13 +213,13 @@ The deduplicators work by generating a deduplication id that is sent to the queu
 
 If you have some custom logic that needs to be used to generate the deduplication id, you can register your own custom deduplicator. The deduplicators are stored in the IoC container with the prefix `queue.sqs-fifo.deduplicator`. So, for example, the `unique` deduplicator is aliased to `queue.sqs-fifo.deduplicator.unique`.
 
-Custom deduplicators are created by registering a new prefixed alias in the IoC. This alias should resolve to a new object instance that implements the `ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator` contract. You can either define a new class that implements this contract, or you can create a new `ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Callback` instance, which takes a `Closure` that performs the deduplication logic. The defined `Closure` should take two parameters: `$payload` and `$queue`, where `$payload` is the `json_encoded()` message to send to the queue, and `$queue` is the name of the queue to which the message is being sent. The generated id must not be more than 128 characters, and can contain alphanumeric characters and punctuation (``!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``).
+Custom deduplicators are created by registering a new prefixed alias in the IoC. This alias should resolve to a new object instance that implements the `Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator` contract. You can either define a new class that implements this contract, or you can create a new `Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Callback` instance, which takes a `Closure` that performs the deduplication logic. The defined `Closure` should take two parameters: `$payload` and `$queue`, where `$payload` is the `json_encoded()` message to send to the queue, and `$queue` is the name of the queue to which the message is being sent. The generated id must not be more than 128 characters, and can contain alphanumeric characters and punctuation (``!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``).
 
 So, for example, if you wanted to create a `random` deduplicator that would randomly select some jobs to be duplicates, you could add the following line in the `register()` method of your `AppServiceProvider`:
 
 ``` php
 $this->app->bind('queue.sqs-fifo.deduplicator.random', function ($app) {
-    return new \ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Callback(function ($payload, $queue) {
+    return new \Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Callback(function ($payload, $queue) {
         // Return the deduplication id generated for messages. Randomly 0 or 1.
         return mt_rand(0,1);
     });
@@ -346,7 +231,7 @@ Or, if you prefer to create a new class, your class would look like this:
 ``` php
 namespace App\Deduplicators;
 
-use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
+use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class Random implements Deduplicator
 {
@@ -372,28 +257,23 @@ Contributions are welcome. Please see [CONTRIBUTING](CONTRIBUTING.md) for detail
 
 ## Security
 
-If you discover any security related issues, please email patrick@shiftonelabs.com instead of using the issue tracker.
+If you discover any security related issues, please email tech@bisnow.com instead of using the issue tracker.
 
 ## Credits
-
-- [Patrick Carlo-Hickman][link-author]
+- [Wes Hulette][link-author]
+- [Patrick Carlo-Hickman][link-original-author]
 - [All Contributors][link-contributors]
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.txt) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/shiftonelabs/laravel-sqs-fifo-queue.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/bisnow/laravel-sqs-fifo-queue.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/shiftonelabs/laravel-sqs-fifo-queue/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/shiftonelabs/laravel-sqs-fifo-queue.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/shiftonelabs/laravel-sqs-fifo-queue.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/shiftonelabs/laravel-sqs-fifo-queue.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/bisnow/laravel-sqs-fifo-queue.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/shiftonelabs/laravel-sqs-fifo-queue
-[link-travis]: https://travis-ci.org/shiftonelabs/laravel-sqs-fifo-queue
-[link-scrutinizer]: https://scrutinizer-ci.com/g/shiftonelabs/laravel-sqs-fifo-queue/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/shiftonelabs/laravel-sqs-fifo-queue
-[link-downloads]: https://packagist.org/packages/shiftonelabs/laravel-sqs-fifo-queue
-[link-author]: https://github.com/patrickcarlohickman
+[link-packagist]: https://packagist.org/packages/bisnow/laravel-sqs-fifo-queue
+[link-downloads]: https://packagist.org/packages/bisnow/laravel-sqs-fifo-queue
+[link-author]: https://github.com/jwhulette
+[link-original-author]: https://github.com/patrickcarlohickman
 [link-contributors]: ../../contributors

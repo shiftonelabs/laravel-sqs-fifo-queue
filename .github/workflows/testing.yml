@@ -1,0 +1,109 @@
+name: 'Run Tests Matrix'
+
+on: push
+
+env:
+  SQS_REGION: 'us-east-1'
+
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Run PHP CS Fixer
+        uses: docker://oskarstark/php-cs-fixer-ga
+        with:
+          args: --config=.php-cs-fixer.dist.php --allow-risky=yes
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Fix styling
+  test:
+    needs: php-cs-fixer
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.2, 8.1, 8.0, 7.4]
+        laravel: [9.*, 8.*, 7.*, 6.*, 5.8.*, 5.7.*]
+        dependency-version: [prefer-lowest, prefer-stable]
+        include:
+          - laravel: 9.*
+            testbench: 7.*
+          - laravel: 8.*
+            testbench: 6.23
+          - laravel: 7.*
+            testbench: 5.*
+          - laravel: 6.*
+            testbench: 4.*
+          - laravel: 5.8.*
+            testbench: 3.*
+          - laravel: 5.7.*
+            testbench: 3.*
+        exclude:
+          - laravel: 9.*
+            php: 7.4
+          - laravel: 8.*
+            php: 8.2
+          - laravel: 7.*
+            php: 8.2                    
+          - laravel: 7.*
+            php: 8.1    
+          - laravel: 6.*
+            php: 8.2                
+          - laravel: 6.*
+            php: 8.1 
+          - laravel: 5.8.*
+            php: 8.2                   
+          - laravel: 5.8.*
+            php: 8.1
+          - laravel: 5.8.*
+            php: 8.0
+          - laravel: 5.7.*
+            php: 8.2            
+          - laravel: 5.7.*
+            php: 8.1
+          - laravel: 5.7.*
+            php: 8.0
+
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
+          coverage: none
+
+      # Install Composer Dependencies
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "symfony/console:>=4.3.4" "mockery/mockery:^1.3.2" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+
+      - name: Prepare the application
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Execute tests
+        run: vendor/bin/phpunit

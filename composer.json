@@ -1,52 +1,63 @@
 {
-    "name": "shiftonelabs/laravel-sqs-fifo-queue",
+    "name": "bisnow/laravel-sqs-fifo-queue",
     "description": "Adds a Laravel queue driver for Amazon SQS FIFO queues.",
-    "keywords": ["laravel", "lumen", "illuminate", "queue", "sqs", "fifo", "aws"],
-    "homepage": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue",
+    "keywords": [
+        "laravel",
+        "lumen",
+        "illuminate",
+        "queue",
+        "sqs",
+        "fifo",
+        "aws"
+    ],
+    "homepage": "https://github.com/bisnow/laravel-sqs-fifo-queue",
     "license": "MIT",
     "authors": [
         {
-            "name": "Patrick Carlo-Hickman",
-            "email": "patrick@shiftonelabs.com"
+            "name": "Wes Hulette",
+            "email": "wes.hulette@bisnow.com"
         }
     ],
     "support": {
-        "issues": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue/issues",
-        "source": "https://github.com/shiftonelabs/laravel-sqs-fifo-queue"
+        "issues": "https://github.com/bisnow/laravel-sqs-fifo-queue/issues",
+        "source": "https://github.com/bisnow/laravel-sqs-fifo-queue"
     },
     "require": {
-        "php": ">=5.5.0",
-        "aws/aws-sdk-php": "~3.0",
-        "illuminate/queue": ">=4.1",
-        "illuminate/support": ">=4.1",
-        "ramsey/uuid": ">=3.0"
+        "php": "^7.4|^8.0|^8.1",
+        "aws/aws-sdk-php": "^3.255.8",
+        "laravel/framework": "^5.7|^5.7|^6.0|^7.0|^8.0|^9.0",
+        "guzzlehttp/guzzle": "^6|^7"
     },
     "require-dev": {
-        "illuminate/encryption": ">=4.1",
-        "phpunit/phpunit": "~4.0",
-        "mockery/mockery": "~0.9",
-        "squizlabs/php_codesniffer": "2.*",
-        "shiftonelabs/codesniffer-standard": "0.*",
-        "vlucas/phpdotenv": "~2.2"
+        "orchestra/testbench": "^3.9|^4.0|^5.0|^6.0|^7.0",
+        "phpunit/phpunit": "^7.0|^9.4",
+        "guzzlehttp/guzzle": "^6|^7"
     },
     "autoload": {
         "psr-4": {
-            "ShiftOneLabs\\LaravelSqsFifoQueue\\": "src/"
+            "Bisnow\\LaravelSqsFifoQueue\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ShiftOneLabs\\LaravelSqsFifoQueue\\Tests\\": "tests/"
+            "Bisnow\\LaravelSqsFifoQueue\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "tf": "vendor/bin/phpunit --filter "
+    },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
     },
     "minimum-stability": "stable",
     "extra": {
         "laravel": {
             "providers": [
-                "ShiftOneLabs\\LaravelSqsFifoQueue\\LaravelSqsFifoQueueServiceProvider"
+                "Bisnow\\LaravelSqsFifoQueue\\LaravelSqsFifoQueueServiceProvider"
             ]
         }
     }

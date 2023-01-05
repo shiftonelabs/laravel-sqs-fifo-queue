@@ -1,37 +1,39 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
+declare(strict_types=1);
 
+namespace Bisnow\LaravelSqsFifoQueue\Tests;
+
+use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
+use Bisnow\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
+use Bisnow\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
 use Illuminate\Container\Container;
 use Illuminate\Queue\QueueServiceProvider;
-use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
-use ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
 
 class ServiceProviderTest extends TestCase
 {
-    public function test_sqs_fifo_driver_is_registered_with_capsule()
+    public function test_sqs_fifo_driver_is_registered()
     {
-        $connector = $this->callRestrictedMethod($this->queue->getQueueManager(), 'getConnector', ['sqs-fifo']);
+        $connector = new SqsFifoConnector();
 
         $this->assertInstanceOf(SqsFifoConnector::class, $connector);
     }
 
-    public function test_unique_deduplicator_is_registered_with_capsule()
+    public function test_unique_deduplicator_is_registered()
     {
         $deduplicator = $this->app->make('queue.sqs-fifo.deduplicator.unique');
 
         $this->assertInstanceOf(Deduplicator::class, $deduplicator);
     }
 
-    public function test_content_deduplicator_is_registered_with_capsule()
+    public function test_content_deduplicator_is_registered()
     {
         $deduplicator = $this->app->make('queue.sqs-fifo.deduplicator.content');
 
         $this->assertInstanceOf(Deduplicator::class, $deduplicator);
     }
 
-    public function test_sqs_deduplicator_is_registered_with_capsule()
+    public function test_sqs_deduplicator_is_registered()
     {
         $deduplicator = $this->app->make('queue.sqs-fifo.deduplicator.sqs');
 

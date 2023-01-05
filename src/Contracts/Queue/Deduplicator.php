@@ -1,6 +1,8 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue;
+declare(strict_types=1);
+
+namespace Bisnow\LaravelSqsFifoQueue\Contracts\Queue;
 
 interface Deduplicator
 {
@@ -8,9 +10,9 @@ interface Deduplicator
      * Generate a deduplication id to determine if a message is a duplicate.
      *
      * @param  string  $payload
-     * @param  string  $queue
+     * @param  string|null  $queue
      *
      * @return string|bool
      */
-    public function generate($payload, $queue);
+    public function generate(string $payload, ?string $queue);
 }

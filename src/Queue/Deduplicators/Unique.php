@@ -1,9 +1,11 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators;
+declare(strict_types=1);
 
+namespace Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators;
+
+use Bisnow\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 use Ramsey\Uuid\Uuid;
-use ShiftOneLabs\LaravelSqsFifoQueue\Contracts\Queue\Deduplicator;
 
 class Unique implements Deduplicator
 {
@@ -12,13 +14,8 @@ class Unique implements Deduplicator
      *
      * This deduplicator should be used for queues that should treat all messages
      * as unique, even if the payload is identical to another message.
-     *
-     * @param  string  $payload
-     * @param  string  $queue
-     *
-     * @return string
      */
-    public function generate($payload, $queue)
+    public function generate(string $payload, ?string $queue): string
     {
         return Uuid::uuid4()->toString();
     }

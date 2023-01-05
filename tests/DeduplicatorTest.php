@@ -1,11 +1,13 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
+declare(strict_types=1);
 
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Sqs;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Unique;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
-use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Callback;
+namespace Bisnow\LaravelSqsFifoQueue\Tests;
+
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Callback;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Content;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Sqs;
+use Bisnow\LaravelSqsFifoQueue\Queue\Deduplicators\Unique;
 
 class DeduplicatorTest extends TestCase
 {

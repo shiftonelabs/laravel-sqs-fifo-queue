@@ -1,6 +1,8 @@
 <?php
 
-namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests\Fakes;
+declare(strict_types=1);
+
+namespace Bisnow\LaravelSqsFifoQueue\Tests\Fakes;
 
 class StandardJob
 {
