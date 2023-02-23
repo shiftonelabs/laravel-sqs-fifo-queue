@@ -453,6 +453,7 @@ class QueueTest extends TestCase
         $client->shouldReceive('sendMessage')->once()->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', '', '', true);
+        $queue->setContainer($this->app);
         $queue->later(10, $job);
     }
 
