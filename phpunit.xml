@@ -7,7 +7,8 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         cacheResult="false">
 	<testsuites>
 		<testsuite name="Laravel SQS FIFO Queue Test Suite">
 			<directory suffix="Test.php">./tests/</directory>
