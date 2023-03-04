@@ -11,10 +11,16 @@ use Illuminate\Queue\SqsQueue;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Queue\Capsule\Manager as Capsule;
 use PHPUnit\Framework\TestCase as PhpunitTestCase;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
 
 class TestCase extends PhpunitTestCase
 {
+    /**
+     * Use the integration trait so PHPUnit understands Mockery assertions.
+     */
+    use MockeryPHPUnitIntegration;
+
     /**
      * The Illuminate Container used by the queue.
      *
