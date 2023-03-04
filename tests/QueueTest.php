@@ -33,7 +33,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, $group, '');
         $queue->setContainer($this->app);
@@ -56,7 +56,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, 'queue-group', '');
         $queue->setContainer($this->app);
@@ -84,7 +84,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, 'queue-group', '');
         $queue->setContainer($this->app);
@@ -112,7 +112,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, 'queue-group', '');
         $queue->setContainer($this->app);
@@ -149,7 +149,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, 'queue-group', '');
         $queue->setContainer($this->app);
@@ -174,7 +174,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', '');
         $queue->setContainer($this->app);
@@ -195,7 +195,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', 'unique');
         $queue->setContainer($this->app);
@@ -217,7 +217,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', 'unique');
         $queue->setContainer($this->app);
@@ -247,7 +247,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', '');
         $queue->setContainer($this->app);
@@ -277,7 +277,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', '');
         $queue->setContainer($this->app);
@@ -299,7 +299,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -321,7 +321,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -343,7 +343,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -365,7 +365,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -389,7 +389,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->with(m::on($closure))->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -406,7 +406,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->andReturn($result);
+        $client->shouldReceive('sendMessage')->never()->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -424,7 +424,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->andReturn($result);
+        $client->shouldReceive('sendMessage')->never()->andReturn($result);
 
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
@@ -477,7 +477,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->andReturn($result);
 
         $queue = $this->queue->connection($connection);
         $queue->setSqs($client);
@@ -493,7 +493,7 @@ class QueueTest extends TestCase
 
         $result = new Result(['MessageId' => '1234']);
         $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->andReturn($result);
+        $client->shouldReceive('sendMessage')->once()->andReturn($result);
 
         $queue = $this->queue->connection($connection);
         $queue->setSqs($client);
