@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Converted CI from Travis CI to Github Actions.
+- Updated tests to handle changes made in AWS and Laravel 8.x.
+- Updated CI config to stop running tests in Scrutinizer.
 
 ## [2.0.1] - 2020-09-09
 ### Changed
