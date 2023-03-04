@@ -39,8 +39,10 @@ class TestCase extends PhpunitTestCase
      * Initial setup for all tests.
      *
      * @return void
+     *
+     * @before
      */
-    public function setUp()
+    public function beforeSetup()
     {
         $this->loadEnvironment();
         $this->setUpCapsule();
