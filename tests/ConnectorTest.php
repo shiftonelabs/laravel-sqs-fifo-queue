@@ -24,7 +24,7 @@ class ConnectorTest extends TestCase
         $config = ['driver' => 'sqs-fifo', 'queue' => 'test'];
         $connector = new SqsFifoConnector();
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $connector->connect($config);
     }

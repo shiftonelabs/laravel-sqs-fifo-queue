@@ -411,7 +411,8 @@ class QueueTest extends TestCase
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Deduplication method ['.$deduplication.'] must resolve to a');
+        $this->expectException(InvalidArgumentException::class, 'Deduplication method ['.$deduplication.'] must resolve to a');
+        $this->expectExceptionMessage('Deduplication method ['.$deduplication.'] must resolve to a');
 
         $queue->pushRaw($job);
     }
@@ -428,7 +429,8 @@ class QueueTest extends TestCase
         $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
         $queue->setContainer($this->app);
 
-        $this->setExpectedException(InvalidArgumentException::class, 'Unsupported deduplication method ['.$deduplication.'].');
+        $this->expectException(InvalidArgumentException::class, 'Unsupported deduplication method ['.$deduplication.'].');
+        $this->expectExceptionMessage('Unsupported deduplication method ['.$deduplication.'].');
 
         $queue->pushRaw($job);
     }
@@ -439,7 +441,7 @@ class QueueTest extends TestCase
         $client = m::mock(SqsClient::class);
         $queue = new SqsFifoQueue($client, '');
 
-        $this->setExpectedException(BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
 
         $queue->later(10, $job);
     }
