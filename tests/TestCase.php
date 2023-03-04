@@ -8,12 +8,12 @@ use ReflectionMethod;
 use ReflectionProperty;
 use Illuminate\Queue\Queue;
 use Illuminate\Queue\SqsQueue;
-use PHPUnit_Framework_TestCase;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Queue\Capsule\Manager as Capsule;
+use PHPUnit\Framework\TestCase as PhpunitTestCase;
 use ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider;
 
-class TestCase extends PHPUnit_Framework_TestCase
+class TestCase extends PhpunitTestCase
 {
     /**
      * The Illuminate Container used by the queue.
