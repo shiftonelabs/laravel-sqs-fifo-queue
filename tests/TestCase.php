@@ -57,11 +57,7 @@ class TestCase extends PhpunitTestCase
      */
     public function loadEnvironment()
     {
-        try {
-            (new Dotenv(__DIR__.'/..'))->load();
-        } catch (Exception $e) {
-            //
-        }
+        (Dotenv::createUnsafeImmutable(__DIR__.'/..'))->safeLoad();
     }
 
     /**
