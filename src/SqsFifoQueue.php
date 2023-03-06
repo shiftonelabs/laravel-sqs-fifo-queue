@@ -52,17 +52,19 @@ class SqsFifoQueue extends SqsQueue
      * @param  string  $default
      * @param  string  $prefix
      * @param  string  $suffix
+     * @param  bool  $dispatchAfterCommit
      * @param  string  $group
      * @param  string  $deduplicator
      * @param  bool  $allowDelay
      *
      * @return void
      */
-    public function __construct(SqsClient $sqs, $default, $prefix = '', $suffix = '', $group = '', $deduplicator = '', $allowDelay = false)
+    public function __construct(SqsClient $sqs, $default, $prefix = '', $suffix = '', $dispatchAfterCommit = false, $group = '', $deduplicator = '', $allowDelay = false)
     {
         parent::__construct($sqs, $default, $prefix);
 
         $this->suffix = $suffix;
+        $this->dispatchAfterCommit = $dispatchAfterCommit;
         $this->group = $group;
         $this->deduplicator = $deduplicator;
         $this->allowDelay = $allowDelay;

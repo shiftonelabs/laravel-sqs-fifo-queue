@@ -106,6 +106,52 @@ class ConnectorTest extends TestCase
         $this->assertEquals($config['suffix'], $this->getRestrictedValue($queue, 'suffix'));
     }
 
+    public function test_sqs_fifo_driver_creates_queue_with_default_after_commit_when_missing_after_commit()
+    {
+        $config = $this->getConfig([], ['after_commit']);
+        $connector = new SqsFifoConnector();
+
+        $queue = $connector->connect($config);
+
+        $this->assertInstanceOf(SqsFifoQueue::class, $queue);
+        $this->assertEquals(false, $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+    }
+
+    public function test_sqs_fifo_driver_creates_queue_with_empty_after_commit()
+    {
+        $config = $this->getConfig(['after_commit' => '']);
+        $connector = new SqsFifoConnector();
+
+        $queue = $connector->connect($config);
+
+        $this->assertInstanceOf(SqsFifoQueue::class, $queue);
+        $this->assertEquals(false, $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+    }
+
+    public function test_sqs_fifo_driver_creates_queue_with_valid_after_commit_as_false()
+    {
+        $config = $this->getConfig(['after_commit' => false]);
+        $connector = new SqsFifoConnector();
+
+        $queue = $connector->connect($config);
+
+        $this->assertInstanceOf(SqsFifoQueue::class, $queue);
+        $this->assertFalse($config['after_commit']);
+        $this->assertEquals($config['after_commit'], $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+    }
+
+    public function test_sqs_fifo_driver_creates_queue_with_valid_after_commit_as_true()
+    {
+        $config = $this->getConfig(['after_commit' => true]);
+        $connector = new SqsFifoConnector();
+
+        $queue = $connector->connect($config);
+
+        $this->assertInstanceOf(SqsFifoQueue::class, $queue);
+        $this->assertTrue($config['after_commit']);
+        $this->assertEquals($config['after_commit'], $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+    }
+
     public function test_sqs_fifo_driver_creates_queue_with_default_group_when_missing_group()
     {
         $config = $this->getConfig([], ['group']);
@@ -230,6 +276,7 @@ class ConnectorTest extends TestCase
             'suffix' => '-staging',
             'queue' => 'queuename.fifo',
             'region' => 'us-east-1',
+            'after_commit' => true,
             'group' => 'default',
             'deduplicator' => 'unique',
             'allow_delay' => false,

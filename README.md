@@ -178,6 +178,10 @@ There are two differences between the standard Laravel implementation and this o
 - This package adds support for queue suffixes all the way back to Laravel 5.1.
 - SQS FIFO queues must end with a `.fifo` suffix. As seen in the example above, any `suffix` defined in the config will come before the required `.fifo` suffix. Do not specify `.fifo` in the suffix config or the queue name will not generate correctly.
 
+#### Jobs & Database Transactions
+
+Laravel 8.19.0 added in support for [the `after_commit` configuration option](https://laravel.com/docs/8.x/queues#jobs-and-database-transactions). When set to `true`, this option ensures that jobs that are queued during a database transaction are not actually dispatched until after the database transaction is committed. If the transaction is rolled back, the job will be discarded and not dispatched. If there are no active database transactions, the job will be dispatched immediately. This package has been updated to support this feature, but it does not add support for the feature to previous versions of Laravel (like the suffix did).
+
 ## Usage
 
 For the most part, usage of this queue driver is the same as the built in queue drivers. There are, however, a few extra things to consider when working with Amazon's SQS FIFO queues.

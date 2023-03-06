@@ -39,6 +39,7 @@ class SqsFifoConnector extends SqsConnector
             $config['queue'],
             Arr::get($config, 'prefix', ''),
             Arr::get($config, 'suffix', ''),
+            (bool)Arr::get($config, 'after_commit', false),
             $group,
             $deduplicator,
             $allowDelay
