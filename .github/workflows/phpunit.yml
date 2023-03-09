@@ -46,6 +46,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          # We need more than 1 commit to prevent the "Failed to retrieve
+          # commit parents" error from the ocular code coverage upload.
+          fetch-depth: 5
 
       # Setup the PHP version to use for the test and include xdebug to generate the code coverage file.
       - name: Setup PHP
@@ -68,5 +72,5 @@ jobs:
       - name: Send coverage
         if: success() || failure()
         run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover ./clover.xml
+          composer global require scrutinizer/ocular
+          ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover ./clover.xml
