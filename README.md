@@ -123,6 +123,10 @@ The `suffix` config option is used to support queues for different environments 
 
 The [`after_commit` configuration option](https://laravel.com/docs/10.x/queues#jobs-and-database-transactions) is used to govern how jobs are handled when queued in the middle of a database transaction. When set to `true`, this option ensures that jobs that are queued during a database transaction are not actually dispatched until after the database transaction is committed. If the transaction is rolled back, the job will be discarded and not dispatched. If there are no active database transactions, the job will be dispatched immediately.
 
+#### Queued Event Listeners
+
+At this time, [queued event listeners](https://laravel.com/docs/10.x/events#queued-event-listeners) cannot be handled by this package. The implementation for this would require taking over Laravel's event dispatcher, which is not something this package is prepared to do at this time. To work around this, you would need to convert your queued listener to not be queued, but to then dispatch a new queued job that handles the work.
+
 ## Usage
 
 For the most part, usage of this queue driver is the same as the built in queue drivers. There are, however, a few extra things to consider when working with Amazon's SQS FIFO queues.
