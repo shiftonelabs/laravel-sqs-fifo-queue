@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added support for Laravel 9.x and Laravel 10.x.
+- Added support for PHP 8.0, 8.1, and 8.2.
+- Added a note on non-support of queued event listeners to the readme.
+
+### Removed
+- Removed support for Laravel 4.1 - Laravel 8.x. These are all EOL and will never change, so version 2.1.0 will always work for them.
+- Removed support for PHP 5.5 - PHP 7.4. These are all EOL and will never change, so version 2.1.0 will always work for them.
+
+### Changed
+- Updated package dependencies to support new minimum Laravel and PHP versions.
+- Updated CI configs to support new minimum Laravel and PHP versions.
 
 ## [2.1.0] - 2023-03-05
 ### Added
