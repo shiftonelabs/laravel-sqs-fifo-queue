@@ -11,13 +11,6 @@ use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
 class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = false;
-
-    /**
      * Register any application services.
      *
      * @return void
@@ -34,16 +27,9 @@ class LaravelSqsFifoQueueServiceProvider extends ServiceProvider
         if ($app->bound('queue')) {
             $this->extendManager($app['queue']);
         } else {
-            // "afterResolving" not introduced until 5.0. Before 5.0 uses "resolving".
-            if (method_exists($app, 'afterResolving')) {
-                $app->afterResolving('queue', function ($manager) {
-                    $this->extendManager($manager);
-                });
-            } else {
-                $app->resolving('queue', function ($manager) {
-                    $this->extendManager($manager);
-                });
-            }
+            $app->afterResolving('queue', function ($manager) {
+                $this->extendManager($manager);
+            });
         }
     }
 

@@ -11,7 +11,9 @@ This Laravel/Lumen package provides a queue driver for Amazon's SQS FIFO queues.
 
 ## Versions
 
-This package has been tested on Laravel 4.1 through Laravel 8.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+This package has been tested on Laravel 4.1 through Laravel 10.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+
+This readme has been updated to show information for the most currently supported versions (9.x - 10.x). For Laravel 4.1 through Laravel 8.x, view the 2.x branch.
 
 ## Install
 
@@ -23,27 +25,11 @@ $ composer require shiftonelabs/laravel-sqs-fifo-queue
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
-#### Laravel 5.5+, 6.x, 7.x, 8.x (5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
+#### Laravel 9.x, 10.x
 
 This package uses auto package discovery. The service provider will automatically be registered.
 
-#### Laravel 5.0 - 5.4
-
-Open `config/app.php` and add following line to the providers array:
-
-``` php
-ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider::class,
-```
-
-#### Laravel 4 (4.1, 4.2)
-
-Open `app/config/app.php` and add following line to the providers array:
-
-``` php
-'ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvider',
-```
-
-#### Lumen 5, 6, 7, 8 (5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
+#### Lumen 9.x, 10.x
 
 Open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
 
@@ -53,7 +39,7 @@ $app->register(ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvid
 
 ## Configuration
 
-#### Laravel/Lumen 5.1+, 6.x, 7.x, 8.x (5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.x, 7.x, 8.x)
+#### Laravel/Lumen 9.x, 10.x
 
 If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
 
@@ -61,68 +47,30 @@ Now, for both Laravel and Lumen, open `config/queue.php` and add the following e
 
     'sqs-fifo' => [
         'driver' => 'sqs-fifo',
-        'key' => env('SQS_KEY'),
-        'secret' => env('SQS_SECRET'),
-        'prefix' => env('SQS_PREFIX'),
-        'suffix' => env('SQS_SUFFIX'),
-        'queue' => 'your-queue-name',    // ex: queuename.fifo
-        'region' => 'your-queue-region', // ex: us-east-2
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'prefix' => env('SQS_FIFO_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+        'queue' => env('SQS_FIFO_QUEUE', 'default.fifo'),
+        'suffix' => env('SQS_FIFO_SUFFIX'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'after_commit' => false,
         'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => env('SQS_ALLOW_DELAY'),
+        'deduplicator' => env('SQS_FIFO_DEDUPLICATOR', 'unique'),
+        'allow_delay' => env('SQS_FIFO_ALLOW_DELAY', false),
     ],
 
 Example .env file:
 
-    SQS_KEY=ABCDEFGHIJKLMNOPQRST
-    SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
-    SQS_ALLOW_DELAY=false
+    AWS_ACCESS_KEY_ID=ABCDEFGHIJKLMNOPQRST
+    AWS_SECRET_ACCESS_KEY=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
+    SQS_FIFO_PREFIX=https://sqs.us-east-1.amazonaws.com/123456789012
+    SQS_FIFO_QUEUE=queuename.fifo
+    SQS_FIFO_SUFFIX=-staging
+    AWS_DEFAULT_REGION=us-east-1
+    SQS_FIFO_DEDUPLICATOR=unique
+    SQS_FIFO_ALLOW_DELAY=false
 
-If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file for >= 5.7, or `QUEUE_DRIVER=sqs-fifo` in the `.env` file for < 5.7.
-
-#### Laravel/Lumen 5.0
-
-If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
-
-Now, for both Laravel and Lumen, open `config/queue.php` and add the following entry to the `connections` array:
-
-    'sqs-fifo' => [
-        'driver' => 'sqs-fifo',
-        'key'    => env('SQS_KEY'),
-        'secret' => env('SQS_SECRET'),
-        'queue'  => env('SQS_PREFIX').'/your-queue-name',
-        'region' => 'your-queue-region',
-        'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => env('SQS_ALLOW_DELAY'),
-    ],
-
-Example .env file:
-
-    SQS_KEY=ABCDEFGHIJKLMNOPQRST
-    SQS_SECRET=1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    SQS_PREFIX=https://sqs.us-east-2.amazonaws.com/123456789012
-    SQS_ALLOW_DELAY=false
-
-If you'd like this to be the default connection, also set `QUEUE_DRIVER=sqs-fifo` in the `.env` file.
-
-#### Laravel 4
-
-Open `app/config/queue.php` and add the following entry to the `connections` array:
-
-    'sqs-fifo' => array(
-        'driver' => 'sqs-fifo',
-        'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
-        'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-        'queue'  => 'your-queue-url',    // ex: https://sqs.us-east-2.amazonaws.com/123456789012/queuename.fifo
-        'region' => 'your-queue-region', // ex: us-east-2
-        'group' => 'default',
-        'deduplicator' => 'unique',
-        'allow_delay' => false,
-    ),
-
-If you'd like this to be the default connection, also update the `'default'` key to `'sqs-fifo'`.
+If you'd like this to be the default connection, also set `QUEUE_CONNECTION=sqs-fifo` in the `.env` file.
 
 #### Capsule
 
@@ -138,13 +86,11 @@ $queue->addConnection([
     'driver' => 'sqs-fifo',
     'key'    => 'your-public-key',   // ex: ABCDEFGHIJKLMNOPQRST
     'secret' => 'your-secret-key',   // ex: 1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef
-    /**
-     * Set "prefix"/"suffix" and/or "queue" depending on version, as described for Laravel versions above
-     * 'prefix' => 'your-prefix',
-     * 'suffix' => 'your-suffix',
-     * 'queue' => 'your-queue-name',
-     */
-    'region' => 'your-queue-region', // ex: us-east-2
+    'prefix' => 'your-prefix',       // ex: https://sqs.us-east-1.amazonaws.com/your-account-id
+    'queue' => 'your-queue-name',    // ex: queuename.fifo
+    'suffix' => 'your-suffix',       // ex: -staging
+    'region' => 'your-queue-region', // ex: us-east-1
+    'after_commit' => false,
     'group' => 'default',
     'deduplicator' => 'unique',
     'allow_delay' => false,
@@ -171,16 +117,11 @@ The `'token' => env('AWS_SESSION_TOKEN'),` config option may be added if you nee
 
 The `suffix` config option is used to support queues for different environments without having to specify the environment suffix when using the queue. For example, if you have an `emails-staging.fifo` queue and an `emails-production.fifo` queue, you can set the `suffix` config to `-staging` or `-production` based on the environment, and your code can continue to use `emails.fifo` without needing to know the environment. So, `Job::dispatch()->onQueue('emails.fifo')` will use either the `emails-staging.fifo` or the `emails-production.fifo` queue, depending on the `suffix` defined in the config.
 
-This functionality was introduced to plain SQS queues in Laravel 7.x, primarily to support Laravel Vapor. More details are available on [the PR for the feature](https://github.com/laravel/framework/pull/31784).
-
-There are two differences between the standard Laravel implementation and this one:
-
-- This package adds support for queue suffixes all the way back to Laravel 5.1.
-- SQS FIFO queues must end with a `.fifo` suffix. As seen in the example above, any `suffix` defined in the config will come before the required `.fifo` suffix. Do not specify `.fifo` in the suffix config or the queue name will not generate correctly.
+*NB: SQS FIFO queues must end with a `.fifo` suffix. As seen in the example above, any `suffix` defined in the config will come before the required `.fifo` suffix. Do not specify `.fifo` in the suffix config or the queue name will not generate correctly.*
 
 #### Jobs & Database Transactions
 
-Laravel 8.19.0 added in support for [the `after_commit` configuration option](https://laravel.com/docs/8.x/queues#jobs-and-database-transactions). When set to `true`, this option ensures that jobs that are queued during a database transaction are not actually dispatched until after the database transaction is committed. If the transaction is rolled back, the job will be discarded and not dispatched. If there are no active database transactions, the job will be dispatched immediately. This package has been updated to support this feature, but it does not add support for the feature to previous versions of Laravel (like the suffix did).
+The [`after_commit` configuration option](https://laravel.com/docs/10.x/queues#jobs-and-database-transactions) is used to govern how jobs are handled when queued in the middle of a database transaction. When set to `true`, this option ensures that jobs that are queued during a database transaction are not actually dispatched until after the database transaction is committed. If the transaction is rolled back, the job will be discarded and not dispatched. If there are no active database transactions, the job will be dispatched immediately.
 
 ## Usage
 
@@ -225,8 +166,6 @@ Since per-message delays are not supported, using the `later()` method to push a
 
 Setting the `allow_delay` config option to `true` for a queue will allow the `later()` method to push a job on that queue without an exception. However, the delay parameter sent to the `later()` method is completely ignored since the delay time is defined in SQS on the queue itself.
 
-*Note: There is a bug in Laravel 5.4.36 - 5.6.35 that causes all queued `Mailable` objects that use the `\Illuminate\Bus\Queueable` trait to use the `later()` method. If you are affected by this, you will need to set the `allow_delay` config option to `true` for your queues, even if they don't allow delays. This will prevent the exception from being thrown.*
-
 ## Advanced Usage
 
 #### Per-Job Group and Deduplicator
@@ -265,8 +204,6 @@ dispatch(
         ->withDeduplicator('unique')
 );
 ```
-
-*Note: Laravel 4 does not normally support passing job instances to the queue, but this package does. The job instance will get converted to just the class name, so the queuing system will continue to work, but the message group and the deduplicator will be pulled off of the job instance before the conversion.*
 
 Notification:
 

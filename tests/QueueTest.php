@@ -94,53 +94,12 @@ class QueueTest extends TestCase
 
     public function test_queue_sends_message_group_id_from_mailable()
     {
-        if (!class_exists(SendQueuedMailable::class)) {
-            return $this->markTestSkipped('This version does not support mailables.');
-        }
-
         $group = 'job-group';
         $mailable = new Mail();
         $mailable->onMessageGroup($group);
         $job = new SendQueuedMailable($mailable);
         $closure = function ($message) use ($group) {
             if ($message['MessageGroupId'] != $group) {
-                return false;
-            }
-
-            return true;
-        };
-
-        $result = new Result(['MessageId' => '1234']);
-        $client = m::mock(SqsClient::class);
-        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
-
-        $queue = new SqsFifoQueue($client, '', '', '', false, 'queue-group', '');
-        $queue->setContainer($this->app);
-
-        $queue->push($job);
-    }
-
-    public function test_queue_converts_job_instance_to_class_name_when_queuing_instances_is_not_supported()
-    {
-        $group = 'job-group';
-        $job = new Job();
-        $job->onMessageGroup($group);
-        $closure = function ($message) use ($group) {
-            if ($message['MessageGroupId'] != $group) {
-                return false;
-            }
-
-            $payload = json_decode($message['MessageBody']);
-
-            // On versions that don't support queuing job instances (Laravel 4),
-            // the payload job should be the name of the Job class.
-            if (!class_exists(CallQueuedHandler::class) && $payload->job != Job::class) {
-                return false;
-            }
-
-            // On versions that do support queuing job instances (Laravel 5+),
-            // the payload job should not be the name of the Job class.
-            if (class_exists(CallQueuedHandler::class) && $payload->job == Job::class) {
                 return false;
             }
 
@@ -227,10 +186,6 @@ class QueueTest extends TestCase
 
     public function test_queue_uses_deduplicator_from_notification()
     {
-        if (!class_exists(SendQueuedNotifications::class)) {
-            return $this->markTestSkipped('This version does not support notifications.');
-        }
-
         $deduplication = 'content';
         $notification = new Notification();
         $notification->withDeduplicator($deduplication);
@@ -257,10 +212,6 @@ class QueueTest extends TestCase
 
     public function test_queue_uses_deduplicator_from_mailable()
     {
-        if (!class_exists(SendQueuedMailable::class)) {
-            return $this->markTestSkipped('This version does not support mailables.');
-        }
-
         $deduplication = 'content';
         $mailable = new Mail();
         $mailable->withDeduplicator($deduplication);
@@ -505,10 +456,6 @@ class QueueTest extends TestCase
 
     public function test_get_queue_properly_resolves_url_with_prefix_support()
     {
-        if (!property_exists(SqsFifoQueue::class, 'prefix')) {
-            return $this->markTestSkipped('This version does not support a prefix config value.');
-        }
-
         $client = m::mock(SqsClient::class);
         $prefix = 'https://sqs.us-east-1.amazonaws.com/123456789012';
         $suffix = '-staging';
@@ -543,55 +490,6 @@ class QueueTest extends TestCase
         $this->assertEquals($prefix.'/'.$queueFifoNameWithSuffix, $queue->getQueue($queueFifoNameWithSuffix));
 
         // Make sure the queue name isn't modified if it's already a full url.
-        $queue = new SqsFifoQueue($client, $queueUrl, $prefix, $suffix);
-        $this->assertEquals($queueUrl, $queue->getQueue(null));
-        $this->assertEquals($queueUrl, $queue->getQueue($queueUrl));
-    }
-
-    public function test_get_queue_properly_resolves_url_without_prefix_support()
-    {
-        if (property_exists(SqsFifoQueue::class, 'prefix')) {
-            return $this->markTestSkipped('This version supports a prefix config value.');
-        }
-
-        $client = m::mock(SqsClient::class);
-        $prefix = 'https://sqs.us-east-1.amazonaws.com/123456789012';
-        $suffix = '-staging';
-        $queueName = 'queue';
-        $queueFifoName = $queueName.'.fifo';
-        $queueFifoNameWithSuffix = $queueName.$suffix.'.fifo';
-        $queueUrl = $prefix.'/'.$queueFifoName;
-
-        // Make sure the queue is built without a prefix or suffix.
-        $queue = new SqsFifoQueue($client, $queueFifoName);
-        $this->assertEquals($queueFifoName, $queue->getQueue(null));
-        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
-
-        // Make sure the queue is built with a prefix and not a suffix. This
-        // version does not support prefixes so it will be ignored.
-        $queue = new SqsFifoQueue($client, $queueFifoName, $prefix);
-        $this->assertEquals($queueFifoName, $queue->getQueue(null));
-        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
-
-        // Make sure the queue is built with a suffix and not a prefix. This
-        // version does not support suffixes so it will be ignored.
-        $queue = new SqsFifoQueue($client, $queueFifoName, '', $suffix);
-        $this->assertEquals($queueFifoName, $queue->getQueue(null));
-        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
-
-        // Make sure the queue is built with both a prefix and a suffix. This
-        // version does not support prefixes/suffixes and will be ignored.
-        $queue = new SqsFifoQueue($client, $queueFifoName, $prefix, $suffix);
-        $this->assertEquals($queueFifoName, $queue->getQueue(null));
-        $this->assertEquals($queueFifoName, $queue->getQueue($queueFifoName));
-
-        // Make sure the queue name is only suffixed once. This version
-        // does not support suffixes so it will be ignored.
-        $queue = new SqsFifoQueue($client, $queueFifoNameWithSuffix, $prefix, $suffix);
-        $this->assertEquals($queueFifoNameWithSuffix, $queue->getQueue(null));
-        $this->assertEquals($queueFifoNameWithSuffix, $queue->getQueue($queueFifoNameWithSuffix));
-
-        // Make sure the suffix is ignored even if it's already a full url.
         $queue = new SqsFifoQueue($client, $queueUrl, $prefix, $suffix);
         $this->assertEquals($queueUrl, $queue->getQueue(null));
         $this->assertEquals($queueUrl, $queue->getQueue($queueUrl));

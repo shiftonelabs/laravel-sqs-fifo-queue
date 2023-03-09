@@ -74,29 +74,6 @@ class TestCase extends PhpunitTestCase
         $this->app = $queue->getContainer();
 
         $this->app->instance('queue', $queue->getQueueManager());
-
-        $this->setUpEncrypter();
-    }
-
-    /**
-     * Setup the Encrypter for Laravel 4.2 - 5.2.
-     *
-     * @return void
-     */
-    public function setUpEncrypter()
-    {
-        // Laravel >= 4.2 && <= 5.2 need an encrypter instance to create the connection.
-        if (method_exists(Queue::class, 'setEncrypter')) {
-            if (!defined('MCRYPT_RIJNDAEL_128')) {
-                define('MCRYPT_RIJNDAEL_128', 'rijndael-128');
-            }
-
-            if (!defined('MCRYPT_MODE_CBC')) {
-                define('MCRYPT_MODE_CBC', 'cbc');
-            }
-
-            $this->app->instance('encrypter', new Encrypter(str_random(16)));
-        }
     }
 
     /**
@@ -124,33 +101,28 @@ class TestCase extends PhpunitTestCase
             'driver' => 'sync',
         ]);
 
-        $queueName = getenv('SQS_QUEUE') ?: 'queuename.fifo';
-
-        // Laravel <= 5.0 doesn't use the prefix key. It must be prepended to the queue name.
-        if (!property_exists(SqsQueue::class, 'prefix')) {
-            $queueName = getenv('SQS_PREFIX').'/'.$queueName;
-        }
-
         $queue->addConnection([
             'driver' => 'sqs-fifo',
-            'key' => getenv('SQS_KEY'),
-            'secret' => getenv('SQS_SECRET'),
-            'prefix' => getenv('SQS_PREFIX'),
-            'queue' => $queueName,
-            'region' => getenv('SQS_REGION') ?: 'us-east-2',
+            'key' => getenv('AWS_ACCESS_KEY_ID'),
+            'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
+            'prefix' => getenv('SQS_FIFO_PREFIX'),
+            'queue' => getenv('SQS_FIFO_QUEUE') ?: 'queuename.fifo',
+            'region' => getenv('AWS_DEFAULT_REGION') ?: 'us-east-1',
+            'after_commit' => false,
             'group' => 'default',
-            'deduplicator' => 'unique',
-            'allow_delay' => false,
+            'deduplicator' => getenv('SQS_FIFO_DEDUPLICATOR') ?: 'unique',
+            'allow_delay' => getenv('SQS_FIFO_ALLOW_DELAY') ?: false,
         ], 'sqs-fifo');
 
         $queue->addConnection([
             'driver' => 'sqs-fifo',
-            'prefix' => getenv('SQS_PREFIX'),
-            'queue' => $queueName,
-            'region' => getenv('SQS_REGION') ?: 'us-east-2',
+            'prefix' => getenv('SQS_FIFO_PREFIX'),
+            'queue' => getenv('SQS_FIFO_QUEUE') ?: 'queuename.fifo',
+            'region' => getenv('AWS_DEFAULT_REGION') ?: 'us-east-1',
+            'after_commit' => false,
             'group' => 'default',
-            'deduplicator' => 'unique',
-            'allow_delay' => false,
+            'deduplicator' => getenv('SQS_FIFO_DEDUPLICATOR') ?: 'unique',
+            'allow_delay' => getenv('SQS_FIFO_ALLOW_DELAY') ?: false,
         ], 'sqs-fifo-no-credentials');
     }
 

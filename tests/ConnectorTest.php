@@ -2,8 +2,8 @@
 
 namespace ShiftOneLabs\LaravelSqsFifoQueue\Tests;
 
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
-use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
 use ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors\SqsFifoConnector;
 
@@ -37,10 +37,7 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-
-        if (property_exists($queue, 'prefix')) {
-            $this->assertEquals('', $this->getRestrictedValue($queue, 'prefix'));
-        }
+        $this->assertEquals('', $this->getRestrictedValue($queue, 'prefix'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_empty_prefix()
@@ -51,10 +48,7 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-
-        if (property_exists($queue, 'prefix')) {
-            $this->assertEquals('', $this->getRestrictedValue($queue, 'prefix'));
-        }
+        $this->assertEquals('', $this->getRestrictedValue($queue, 'prefix'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_valid_prefix()
@@ -65,11 +59,8 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-
-        if (property_exists($queue, 'prefix')) {
-            $this->assertNotEmpty($config['prefix']);
-            $this->assertEquals($config['prefix'], $this->getRestrictedValue($queue, 'prefix'));
-        }
+        $this->assertNotEmpty($config['prefix']);
+        $this->assertEquals($config['prefix'], $this->getRestrictedValue($queue, 'prefix'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_missing_suffix()
@@ -114,7 +105,7 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-        $this->assertEquals(false, $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+        $this->assertFalse($this->getRestrictedValue($queue, 'dispatchAfterCommit'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_empty_after_commit()
@@ -125,7 +116,7 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-        $this->assertEquals(false, $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+        $this->assertFalse($this->getRestrictedValue($queue, 'dispatchAfterCommit'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_valid_after_commit_as_false()
@@ -137,7 +128,7 @@ class ConnectorTest extends TestCase
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
         $this->assertFalse($config['after_commit']);
-        $this->assertEquals($config['after_commit'], $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+        $this->assertFalse($this->getRestrictedValue($queue, 'dispatchAfterCommit'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_valid_after_commit_as_true()
@@ -149,7 +140,7 @@ class ConnectorTest extends TestCase
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
         $this->assertTrue($config['after_commit']);
-        $this->assertEquals($config['after_commit'], $this->getRestrictedValue($queue, 'dispatchAfterCommit'));
+        $this->assertTrue($this->getRestrictedValue($queue, 'dispatchAfterCommit'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_default_group_when_missing_group()
@@ -228,7 +219,7 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-        $this->assertEquals(false, $this->getRestrictedValue($queue, 'allowDelay'));
+        $this->assertFalse($this->getRestrictedValue($queue, 'allowDelay'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_empty_allow_delay()
@@ -239,7 +230,7 @@ class ConnectorTest extends TestCase
         $queue = $connector->connect($config);
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
-        $this->assertEquals(false, $this->getRestrictedValue($queue, 'allowDelay'));
+        $this->assertFalse($this->getRestrictedValue($queue, 'allowDelay'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_valid_allow_delay_as_false()
@@ -251,7 +242,7 @@ class ConnectorTest extends TestCase
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
         $this->assertFalse($config['allow_delay']);
-        $this->assertEquals($config['allow_delay'], $this->getRestrictedValue($queue, 'allowDelay'));
+        $this->assertFalse($this->getRestrictedValue($queue, 'allowDelay'));
     }
 
     public function test_sqs_fifo_driver_creates_queue_with_valid_allow_delay_as_true()
@@ -263,7 +254,7 @@ class ConnectorTest extends TestCase
 
         $this->assertInstanceOf(SqsFifoQueue::class, $queue);
         $this->assertTrue($config['allow_delay']);
-        $this->assertEquals($config['allow_delay'], $this->getRestrictedValue($queue, 'allowDelay'));
+        $this->assertTrue($this->getRestrictedValue($queue, 'allowDelay'));
     }
 
     protected function getConfig($overrides = [], $except = [])
@@ -273,8 +264,8 @@ class ConnectorTest extends TestCase
             'key' => 'ABCDEFGHIJKLMNOPQRST',
             'secret' => '1a23bc/deFgHijKl4mNOp5qrS6TUVwXyz7ABCDef',
             'prefix' => 'https://sqs.us-east-1.amazonaws.com/123456789012',
-            'suffix' => '-staging',
             'queue' => 'queuename.fifo',
+            'suffix' => '-staging',
             'region' => 'us-east-1',
             'after_commit' => true,
             'group' => 'default',

@@ -3,10 +3,10 @@
 namespace ShiftOneLabs\LaravelSqsFifoQueue\Queue\Connectors;
 
 use Aws\Sqs\SqsClient;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Queue\Connectors\SqsConnector;
-use ShiftOneLabs\LaravelSqsFifoQueue\Support\Arr;
 use ShiftOneLabs\LaravelSqsFifoQueue\SqsFifoQueue;
 
 class SqsFifoConnector extends SqsConnector
@@ -30,6 +30,7 @@ class SqsFifoConnector extends SqsConnector
             $config['credentials'] = Arr::only($config, ['key', 'secret', 'token']);
         }
 
+        // Pull the custom config options out of the config array sent to SqsClient.
         $group = Arr::pull($config, 'group', 'default');
         $deduplicator = Arr::pull($config, 'deduplicator', 'unique');
         $allowDelay = (bool)Arr::pull($config, 'allow_delay', false);
@@ -37,35 +38,12 @@ class SqsFifoConnector extends SqsConnector
         return new SqsFifoQueue(
             new SqsClient($config),
             $config['queue'],
-            Arr::get($config, 'prefix', ''),
-            Arr::get($config, 'suffix', ''),
-            (bool)Arr::get($config, 'after_commit', false),
+            $config['prefix'] ?? '',
+            $config['suffix'] ?? '',
+            (bool)($config['after_commit'] ?? null),
             $group,
             $deduplicator,
             $allowDelay
         );
-    }
-
-    /**
-     * Get the default configuration for SQS.
-     *
-     * @param  array  $config
-     *
-     * @return array
-     */
-    protected function getDefaultConfiguration(array $config)
-    {
-        // Laravel >= 5.1 has the "getDefaultConfiguration" method.
-        if (method_exists(get_parent_class(), 'getDefaultConfiguration')) {
-            return parent::getDefaultConfiguration($config);
-        }
-
-        return array_merge([
-            'version' => 'latest',
-            'http' => [
-                'timeout' => 60,
-                'connect_timeout' => 60,
-            ],
-        ], $config);
     }
 }
