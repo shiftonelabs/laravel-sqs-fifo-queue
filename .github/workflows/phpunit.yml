@@ -58,7 +58,6 @@ jobs:
       - name: Install dependencies
         run: |
           COMPOSER_MEMORY_LIMIT=-1 composer require "illuminate/queue:${{ matrix.laravel }}" --no-update
-          if [[ ! "${{ matrix.laravel }}" =~ (4.[1-2]|5.[0-2])\.\* ]]; then COMPOSER_MEMORY_LIMIT=-1 composer require "illuminate/notifications:${{ matrix.laravel }}" "illuminate/mail:${{ matrix.laravel }}" --no-update --dev; fi;
           composer update --prefer-dist --no-interaction
 
       # Run the unit tests and generate the code coverage file.
