@@ -36,7 +36,9 @@ class SqsFifoConnector extends SqsConnector
         $allowDelay = (bool)Arr::pull($config, 'allow_delay', false);
 
         return new SqsFifoQueue(
-            new SqsClient($config),
+            new SqsClient(
+                Arr::except($config, ['token'])
+            ),
             $config['queue'],
             $config['prefix'] ?? '',
             $config['suffix'] ?? '',
