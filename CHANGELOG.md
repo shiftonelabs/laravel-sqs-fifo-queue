@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed AWS SDK issue by ensuring `token` is not included in root config options. ([#24](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/pull/24))
 
 ## [3.0.0] - 2023-03-09
 ### Added
