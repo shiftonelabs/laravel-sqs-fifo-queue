@@ -19,7 +19,7 @@ class SqsFifoConnector extends SqsConnector
      *
      * @param  array  $config
      *
-     * @return \Illuminate\Contracts\Queue\Queue
+     * @return Queue
      */
     public function connect(array $config): Queue
     {

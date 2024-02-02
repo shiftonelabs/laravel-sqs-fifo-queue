@@ -12,14 +12,14 @@ class Callback implements Deduplicator
     /**
      * The user defined callback function to generate the deduplication id.
      *
-     * @var \Closure
+     * @var Closure
      */
     protected $callback;
 
     /**
      * Create a new deduplicator instance.
      *
-     * @param  \Closure  $callback
+     * @param  Closure  $callback
      *
      * @return void
      */

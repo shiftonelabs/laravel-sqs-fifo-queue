@@ -45,7 +45,7 @@ class SqsFifoQueue extends SqsQueue
     /**
      * Create a new Amazon SQS queue instance.
      *
-     * @param  \Aws\Sqs\SqsClient  $sqs
+     * @param  SqsClient  $sqs
      * @param  string  $default
      * @param  string  $prefix
      * @param  string  $suffix
@@ -69,7 +69,7 @@ class SqsFifoQueue extends SqsQueue
     /**
      * Set the underlying SQS instance.
      *
-     * @param \Aws\Sqs\SqsClient $sqs
+     * @param SqsClient $sqs
      *
      * @return self
      */
@@ -222,8 +222,8 @@ class SqsFifoQueue extends SqsQueue
      *
      * @return string
      *
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      * @throws \Illuminate\Queue\InvalidPayloadException
      */
     protected function createPayload($job, $data = '', $queue = null): string
