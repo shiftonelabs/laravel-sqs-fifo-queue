@@ -20,7 +20,7 @@ class SqsFifoQueue extends SqsQueue
     /**
      * The queue name suffix.
      */
-    protected string $suffix;
+    protected $suffix;
 
     /**
      * The message group id of the fifo pipe in the queue.
