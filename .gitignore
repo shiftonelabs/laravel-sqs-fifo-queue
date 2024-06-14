@@ -2,3 +2,13 @@
 composer.lock
 .env
 .phpunit.result.cache
+/.idea/.gitignore
+/.idea/laravel-idea.xml
+/.idea/laravel-idea-personal.xml
+/.idea/laravel-sqs-fifo-queue.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/phpunit.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml
