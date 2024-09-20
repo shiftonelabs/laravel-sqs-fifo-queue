@@ -11,9 +11,9 @@ This Laravel/Lumen package provides a queue driver for Amazon's SQS FIFO queues.
 
 ## Versions
 
-This package has been tested on Laravel 4.1 through Laravel 10.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
+This package has been tested on Laravel 4.1 through Laravel 11.x, though it may continue to work on later versions as they are released. This section will be updated to reflect the versions on which the package has actually been tested.
 
-This readme has been updated to show information for the most currently supported versions (9.x - 10.x). For Laravel 4.1 through Laravel 8.x, view the 2.x branch.
+This readme has been updated to show information for the most currently supported versions (9.x - 11.x). For Laravel 4.1 through Laravel 8.x, view the 2.x branch.
 
 ## Install
 
@@ -25,11 +25,11 @@ $ composer require shiftonelabs/laravel-sqs-fifo-queue
 
 Once composer has been updated and the package has been installed, the service provider will need to be loaded.
 
-#### Laravel 9.x, 10.x
+#### Laravel 9.x, 10.x, 11.x
 
 This package uses auto package discovery. The service provider will automatically be registered.
 
-#### Lumen 9.x, 10.x
+#### Lumen 9.x, 10.x, 11.x
 
 Open `bootstrap/app.php` and add following line under the "Register Service Providers" section:
 
@@ -39,7 +39,7 @@ $app->register(ShiftOneLabs\LaravelSqsFifoQueue\LaravelSqsFifoQueueServiceProvid
 
 ## Configuration
 
-#### Laravel/Lumen 9.x, 10.x
+#### Laravel/Lumen 9.x, 10.x, 11.x
 
 If using Lumen, create a `config` directory in your project root if you don't already have one. Next, copy `vendor/laravel/lumen-framework/config/queue.php` to `config/queue.php`.
 
@@ -121,11 +121,11 @@ The `suffix` config option is used to support queues for different environments 
 
 #### Jobs & Database Transactions
 
-The [`after_commit` configuration option](https://laravel.com/docs/10.x/queues#jobs-and-database-transactions) is used to govern how jobs are handled when queued in the middle of a database transaction. When set to `true`, this option ensures that jobs that are queued during a database transaction are not actually dispatched until after the database transaction is committed. If the transaction is rolled back, the job will be discarded and not dispatched. If there are no active database transactions, the job will be dispatched immediately.
+The [`after_commit` configuration option](https://laravel.com/docs/11.x/queues#jobs-and-database-transactions) is used to govern how jobs are handled when queued in the middle of a database transaction. When set to `true`, this option ensures that jobs that are queued during a database transaction are not actually dispatched until after the database transaction is committed. If the transaction is rolled back, the job will be discarded and not dispatched. If there are no active database transactions, the job will be dispatched immediately.
 
 #### Queued Event Listeners
 
-At this time, [queued event listeners](https://laravel.com/docs/10.x/events#queued-event-listeners) cannot be handled by this package. The implementation for this would require taking over Laravel's event dispatcher, which is not something this package is prepared to do at this time. To work around this, you would need to convert your queued listener to not be queued, but to then dispatch a new queued job that handles the work.
+At this time, [queued event listeners](https://laravel.com/docs/11.x/events#queued-event-listeners) cannot be handled by this package. The implementation for this would require taking over Laravel's event dispatcher, which is not something this package is prepared to do at this time. To work around this, you would need to convert your queued listener to not be queued, but to then dispatch a new queued job that handles the work.
 
 ## Usage
 
