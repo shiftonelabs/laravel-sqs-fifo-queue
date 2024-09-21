@@ -99,11 +99,11 @@ class SqsFifoQueue extends SqsQueue
     public function pushRaw($payload, $queue = null, array $options = [])
     {
         $message = [
-            'QueueUrl' => $this->getQueue($queue), 'MessageBody' => $payload, 'MessageGroupId' => $this->getMeta($payload, 'group', $this->group),
+            'QueueUrl' => $this->getQueue($queue), 'MessageBody' => $payload, 'MessageGroupId' => strval($this->getMeta($payload, 'group', $this->group)),
         ];
 
         if (($deduplication = $this->getDeduplicationId($payload, $queue)) !== false) {
-            $message['MessageDeduplicationId'] = $deduplication;
+            $message['MessageDeduplicationId'] = strval($deduplication);
         }
 
         $response = $this->sqs->sendMessage($message);
