@@ -14,4 +14,26 @@ class TraitTest extends TestCase
 
         $this->assertEquals('test', $job->messageGroupId);
     }
+
+    public function test_trait_can_set_deduplicator()
+    {
+        $job = new Job();
+
+        $job->withDeduplicator('test');
+
+        $this->assertEquals('test', $job->deduplicator);
+    }
+
+    public function test_trait_can_unset_deduplicator()
+    {
+        $job = new Job();
+
+        $job->withDeduplicator('test');
+
+        $this->assertEquals('test', $job->deduplicator);
+
+        $job->withoutDeduplicator();
+
+        $this->assertEquals('', $job->deduplicator);
+    }
 }
