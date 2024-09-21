@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.0.3] - 2024-09-21
 ### Fixed
 - Fixed AWS SDK issue by ensuring `MessageGroupId` and `MessageDeduplicationId` are sent as strings. ([#28](https://github.com/shiftonelabs/laravel-sqs-fifo-queue/issues/28))
 
@@ -109,7 +111,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release!
 
-[Unreleased]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/3.0.2...HEAD
+[Unreleased]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/3.0.3...HEAD
+[3.0.3]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/shiftonelabs/laravel-sqs-fifo-queue/compare/2.1.0...3.0.0
