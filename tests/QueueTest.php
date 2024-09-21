@@ -41,6 +41,36 @@ class QueueTest extends TestCase
         $queue->pushRaw($job);
     }
 
+    public function test_queue_sends_message_group_id_as_string()
+    {
+        $group = 1234;
+        $job = 'test';
+        $closure = function ($message) use ($group) {
+            if (gettype($message['MessageGroupId']) != 'string') {
+                $this->fail('MessageGroupId pushed to AWS must be a string.');
+
+                return false;
+            }
+
+            if ($message['MessageGroupId'] !== strval($group)) {
+                $this->fail('MessageGroupId pushed to AWS did not convert correctly.');
+
+                return false;
+            }
+
+            return true;
+        };
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', '', false, $group, '');
+        $queue->setContainer($this->app);
+
+        $queue->pushRaw($job);
+    }
+
     public function test_queue_sends_message_group_id_from_job()
     {
         $group = 'job-group';
@@ -348,6 +378,40 @@ class QueueTest extends TestCase
         $queue->pushRaw($job);
     }
 
+    public function test_queue_sends_custom_message_deduplication_id_as_string()
+    {
+        $idResult = 1234;
+
+        $this->bind_custom_deduplicator($idResult);
+
+        $job = 'test';
+        $deduplication = 'custom';
+        $closure = function ($message) use ($job, $idResult) {
+            if (gettype($message['MessageDeduplicationId']) != 'string') {
+                $this->fail('MessageDeduplicationId pushed to AWS must be a string.');
+
+                return false;
+            }
+
+            if ($message['MessageDeduplicationId'] !== strval($idResult)) {
+                $this->fail('MessageDeduplicationId pushed to AWS did not convert correctly.');
+
+                return false;
+            }
+
+            return true;
+        };
+
+        $result = new Result(['MessageId' => '1234']);
+        $client = m::mock(SqsClient::class);
+        $client->shouldReceive('sendMessage')->once()->with(m::on($closure))->andReturn($result);
+
+        $queue = new SqsFifoQueue($client, '', '', '', false, '', $deduplication);
+        $queue->setContainer($this->app);
+
+        $queue->pushRaw($job);
+    }
+
     public function test_queue_throws_exception_with_invalid_deduplicator()
     {
         $this->bind_invalid_custom_deduplicator();
@@ -495,11 +559,11 @@ class QueueTest extends TestCase
         $this->assertEquals($queueUrl, $queue->getQueue($queueUrl));
     }
 
-    protected function bind_custom_deduplicator()
+    protected function bind_custom_deduplicator($returnId = 'custom')
     {
-        $this->app->bind('queue.sqs-fifo.deduplicator.custom', function () {
-            return new \ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Callback(function ($payload, $queue) {
-                return 'custom';
+        $this->app->bind('queue.sqs-fifo.deduplicator.custom', function () use ($returnId) {
+            return new \ShiftOneLabs\LaravelSqsFifoQueue\Queue\Deduplicators\Callback(function ($payload, $queue) use ($returnId) {
+                return $returnId;
             });
         });
     }
